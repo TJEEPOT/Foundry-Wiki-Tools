@@ -5,6 +5,21 @@ Usage:
     python -m foundry_parser parse <game_dir> [--output <json_path>]
     python -m foundry_parser summary <game_dir>
     python -m foundry_parser lookup <game_dir> <type> <identifier>
+    python -m foundry_parser generate-pages <game_dir> [--output <dir>]
+    python -m foundry_parser generate-navboxes <game_dir> [--output <dir>]
+    python -m foundry_parser generate-lua <game_dir> [--output <dir>]
+    python -m foundry_parser diff-wiki [--pages <dir>] [--backup <dir>]
+    python -m foundry_parser preview [--pages <dir>]
+    python -m foundry_parser upload-wiki --username <user> --password <pass> [--url <url>]
+    python -m foundry_parser batch-upload <game_dir> [--url <url>] [--commit] [--generate]
+    python -m foundry_parser backup-wiki [--url <wiki_url>] [--output <dir>]
+
+Batch upload phases (in order):
+    1. Lua data modules   → Module:Data/*
+    2. Rendering modules   → Module:Infobox, Module:ItemLink, etc.
+    3. Template wrappers   → Template:Infobox Item, etc.
+    4. Navbox templates    → Template:Navbox Items, etc.
+    5. Content pages       → Item, Building, Research, Element, Exploration, Sky Platform pages
 """
 
 from __future__ import annotations
@@ -189,6 +204,206 @@ def main() -> None:
     p_lookup.add_argument("type", help="Entity type (item, building, recipe, research)")
     p_lookup.add_argument("identifier", help="Entity identifier")
 
+    # generate-pages command
+    p_pages = subparsers.add_parser(
+        "generate-pages", help="Generate wiki page wikitext for all entities"
+    )
+    p_pages.add_argument("game_dir", help="Path to Foundry game directory")
+    p_pages.add_argument(
+        "--output",
+        "-o",
+        default="wiki_pages",
+        help="Output directory for .wikitext files (default: wiki_pages/)",
+    )
+
+    # generate-navboxes command
+    p_nav = subparsers.add_parser(
+        "generate-navboxes", help="Generate navbox templates and research tree"
+    )
+    p_nav.add_argument("game_dir", help="Path to Foundry game directory")
+    p_nav.add_argument(
+        "--output",
+        "-o",
+        default="wiki_pages/navboxes",
+        help="Output directory (default: wiki_pages/navboxes/)",
+    )
+
+    # generate-lua command
+    p_lua = subparsers.add_parser(
+        "generate-lua", help="Export game data as Lua modules for wiki"
+    )
+    p_lua.add_argument("game_dir", help="Path to Foundry game directory")
+    p_lua.add_argument(
+        "--output",
+        "-o",
+        default="lua_modules",
+        help="Output directory for .lua files (default: lua_modules/)",
+    )
+
+    # diff-wiki command
+    p_diff = subparsers.add_parser(
+        "diff-wiki", help="Compare generated pages against wiki backup"
+    )
+    p_diff.add_argument(
+        "--pages",
+        default="wiki_pages",
+        help="Generated pages directory (default: wiki_pages/)",
+    )
+    p_diff.add_argument(
+        "--backup",
+        default="wiki_backup",
+        help="Wiki backup directory (default: wiki_backup/)",
+    )
+    p_diff.add_argument(
+        "--output",
+        "-o",
+        default="diff_report",
+        help="Output directory for diff report (default: diff_report/)",
+    )
+
+    # preview command
+    p_preview = subparsers.add_parser(
+        "preview", help="Generate a local HTML preview site"
+    )
+    p_preview.add_argument(
+        "--pages",
+        default="wiki_pages",
+        help="Generated pages directory (default: wiki_pages/)",
+    )
+    p_preview.add_argument(
+        "--output",
+        "-o",
+        default="preview",
+        help="Output directory for HTML site (default: preview/)",
+    )
+
+    # upload-wiki command
+    p_upload = subparsers.add_parser(
+        "upload-wiki", help="Upload pages to wiki via MediaWiki API"
+    )
+    p_upload.add_argument(
+        "--pages",
+        default="wiki_pages",
+        help="Pages directory to upload (default: wiki_pages/)",
+    )
+    p_upload.add_argument(
+        "--url",
+        default="https://wiki.foundry-game.com",
+        help="Wiki base URL",
+    )
+    p_upload.add_argument("--username", required=True, help="Bot username")
+    p_upload.add_argument("--password", required=True, help="Bot password")
+    p_upload.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Don't actually upload (default: true)",
+    )
+    p_upload.add_argument(
+        "--commit",
+        action="store_true",
+        help="Actually upload (disables dry-run)",
+    )
+
+    # batch-upload command
+    p_batch = subparsers.add_parser(
+        "batch-upload",
+        help="Full pipeline: generate all content then upload to wiki",
+    )
+    p_batch.add_argument(
+        "game_dir",
+        help="Path to Foundry game directory",
+    )
+    p_batch.add_argument(
+        "--url",
+        default="http://localhost:4000",
+        help="Wiki base URL (default: http://localhost:4000)",
+    )
+    p_batch.add_argument("--username", default="Admin", help="Bot username (default: Admin)")
+    p_batch.add_argument("--password", default="", help="Bot password")
+    p_batch.add_argument(
+        "--pages",
+        default="wiki_pages",
+        help="Pages directory (default: wiki_pages/)",
+    )
+    p_batch.add_argument(
+        "--lua",
+        default="lua_modules",
+        help="Lua data modules directory (default: lua_modules/)",
+    )
+    p_batch.add_argument(
+        "--wiki-modules",
+        default="wiki_modules",
+        help="Wiki rendering modules directory (default: wiki_modules/)",
+    )
+    p_batch.add_argument(
+        "--navboxes",
+        default=None,
+        help="Navboxes directory (default: <pages>/navboxes/)",
+    )
+    p_batch.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Don't actually upload (default: true)",
+    )
+    p_batch.add_argument(
+        "--commit",
+        action="store_true",
+        help="Actually upload (disables dry-run)",
+    )
+    p_batch.add_argument(
+        "--generate",
+        action="store_true",
+        help="Re-generate all content before uploading",
+    )
+    p_batch.add_argument(
+        "--rate-limit",
+        type=float,
+        default=0.2,
+        help="Seconds between API edits (default: 0.2 for localhost)",
+    )
+    p_batch.add_argument(
+        "--skip-unchanged",
+        action="store_true",
+        default=True,
+        help="Skip pages whose content matches the wiki (default: true)",
+    )
+    p_batch.add_argument(
+        "--images",
+        default=None,
+        help="Directory of renamed wiki images to upload (e.g. wiki_images/). "
+             "Omit to skip image upload.",
+    )
+    p_batch.add_argument(
+        "--no-overwrite-images",
+        action="store_true",
+        default=False,
+        help="Skip images that already exist on the wiki (default: overwrite)",
+    )
+
+    # backup-wiki command
+    p_backup = subparsers.add_parser(
+        "backup-wiki", help="Download all wiki pages for offline reference"
+    )
+    p_backup.add_argument(
+        "--url",
+        default="https://wiki.foundry-game.com",
+        help="Wiki base URL (default: https://wiki.foundry-game.com)",
+    )
+    p_backup.add_argument(
+        "--output",
+        "-o",
+        default="wiki_backup",
+        help="Output directory (default: wiki_backup/)",
+    )
+    p_backup.add_argument(
+        "--rate-limit",
+        type=float,
+        default=0.5,
+        help="Seconds between API requests (default: 0.5)",
+    )
+
     args = parser.parse_args()
 
     if args.command == "parse":
@@ -197,7 +412,439 @@ def main() -> None:
         cmd_summary(args)
     elif args.command == "lookup":
         cmd_lookup(args)
+    elif args.command == "generate-pages":
+        cmd_generate_pages(args)
+    elif args.command == "generate-navboxes":
+        cmd_generate_navboxes(args)
+    elif args.command == "generate-lua":
+        cmd_generate_lua(args)
+    elif args.command == "diff-wiki":
+        cmd_diff_wiki(args)
+    elif args.command == "preview":
+        cmd_preview(args)
+    elif args.command == "upload-wiki":
+        cmd_upload_wiki(args)
+    elif args.command == "batch-upload":
+        cmd_batch_upload(args)
+    elif args.command == "backup-wiki":
+        cmd_backup_wiki(args)
 
 
-if __name__ == "__main__":
-    main()
+def cmd_diff_wiki(args: argparse.Namespace) -> None:
+    """Compare generated pages against wiki backup."""
+    from .wiki_diff import diff_against_backup
+
+    pages_dir = Path(args.pages)
+    backup_dir = Path(args.backup)
+    output_dir = Path(args.output)
+
+    if not pages_dir.exists():
+        print(f"Error: pages directory '{pages_dir}' not found.")
+        print("Run 'generate-pages' first.")
+        sys.exit(1)
+    if not backup_dir.exists():
+        print(f"Error: backup directory '{backup_dir}' not found.")
+        print("Run 'backup-wiki' first.")
+        sys.exit(1)
+
+    print("Comparing generated pages against wiki backup...\n")
+    diff_against_backup(pages_dir, backup_dir, output_dir)
+
+
+def cmd_preview(args: argparse.Namespace) -> None:
+    """Generate a local HTML preview site."""
+    from .preview import generate_preview_site
+
+    pages_dir = Path(args.pages)
+    output_dir = Path(args.output)
+
+    if not pages_dir.exists():
+        print(f"Error: pages directory '{pages_dir}' not found.")
+        print("Run 'generate-pages' first.")
+        sys.exit(1)
+
+    print("Generating HTML preview site...\n")
+    count = generate_preview_site(pages_dir, output_dir)
+    print(f"\nDone! {count} pages rendered.")
+    print(f"Open {output_dir}/index.html in your browser to browse.")
+
+
+def cmd_upload_wiki(args: argparse.Namespace) -> None:
+    """Upload pages to wiki via MediaWiki API."""
+    try:
+        from .wiki_upload import WikiUploader
+    except ImportError:
+        print("Error: 'requests' package required. Install with: pip install requests")
+        sys.exit(1)
+
+    dry_run = not args.commit
+    pages_dir = Path(args.pages)
+
+    uploader = WikiUploader(
+        site_url=args.url,
+        username=args.username,
+        password=args.password,
+    )
+
+    if not dry_run:
+        print("Logging in...")
+        uploader.login()
+
+    print(f"Uploading from {pages_dir}...")
+    results = uploader.upload_pages(pages_dir, dry_run=dry_run)
+
+    if dry_run:
+        print("\n(Dry run — no changes made. Use --commit to actually upload.)")
+
+
+def cmd_generate_navboxes(args: argparse.Namespace) -> None:
+    """Generate navbox templates and research tree page."""
+    from .navbox_generator import generate_all_navboxes
+
+    print("Loading game data...")
+    gd = GameData.from_game_dir(Path(args.game_dir))
+    summary = gd.summary()
+    total = sum(summary.values())
+    print(f"Parsed {total} entities.\n")
+
+    print("Generating navboxes...")
+    output_dir = Path(args.output)
+    results = generate_all_navboxes(gd, output_dir)
+
+    print(f"\nDone! {len(results)} navigation files generated.")
+
+
+def cmd_generate_pages(args: argparse.Namespace) -> None:
+    """Generate wiki page wikitext from game data."""
+    from .page_generator import generate_all_pages
+
+    print("Loading game data...")
+    gd = GameData.from_game_dir(Path(args.game_dir))
+    summary = gd.summary()
+    total = sum(summary.values())
+    print(f"Parsed {total} entities.\n")
+
+    print("Generating wiki pages...")
+    output_dir = Path(args.output)
+    results = generate_all_pages(gd, output_dir)
+
+    total_pages = sum(results.values())
+    print(f"\nDone! {total_pages} pages generated.")
+
+
+def cmd_generate_lua(args: argparse.Namespace) -> None:
+    """Generate Lua data modules from game data."""
+    from .lua_export import export_all_lua
+
+    print("Loading game data...")
+    gd = GameData.from_game_dir(Path(args.game_dir))
+    summary = gd.summary()
+    total = sum(summary.values())
+    print(f"Parsed {total} entities.\n")
+
+    print("Generating Lua modules...")
+    output_dir = Path(args.output)
+    results = export_all_lua(gd, output_dir)
+
+    print(f"\nGenerated {len(results)} modules in {output_dir}/")
+    total_entries = sum(results.values())
+    print(f"Total entries: {total_entries}")
+
+
+def cmd_batch_upload(args: argparse.Namespace) -> None:
+    """Full batch upload: Lua modules → wiki modules → templates → navboxes → pages."""
+    try:
+        from .wiki_upload import WikiUploader
+    except ImportError:
+        print("Error: 'requests' package required. Install with: pip install requests")
+        sys.exit(1)
+
+    dry_run = not args.commit
+    pages_dir = Path(args.pages)
+    lua_dir = Path(args.lua)
+    wiki_modules_dir = Path(args.wiki_modules)
+    navboxes_dir = Path(args.navboxes) if args.navboxes else pages_dir / "navboxes"
+
+    # --- Optionally regenerate everything first ---
+    if args.generate:
+        print("=" * 60)
+        print("Step 0: Regenerating all content from game data")
+        print("=" * 60)
+        gd = GameData.from_game_dir(Path(args.game_dir))
+        summary = gd.summary()
+        total = sum(summary.values())
+        print(f"Parsed {total} entities.\n")
+
+        # Generate Lua data modules
+        from .lua_export import export_all_lua
+        print("Generating Lua data modules...")
+        lua_dir.mkdir(parents=True, exist_ok=True)
+        export_all_lua(gd, lua_dir)
+
+        # Generate pages
+        from .page_generator import generate_all_pages
+        print("\nGenerating wiki pages...")
+        generate_all_pages(gd, pages_dir)
+
+        # Generate navboxes
+        from .navbox_generator import generate_all_navboxes
+        print("\nGenerating navboxes...")
+        navboxes_dir.mkdir(parents=True, exist_ok=True)
+        generate_all_navboxes(gd, navboxes_dir)
+
+        print()
+
+    # --- Set up uploader ---
+    uploader = WikiUploader(
+        site_url=args.url,
+        username=args.username,
+        password=args.password,
+        rate_limit=args.rate_limit,
+    )
+
+    if dry_run:
+        print("=" * 60)
+        print("DRY RUN — no changes will be made")
+        print(f"Target wiki: {args.url}")
+        print("=" * 60)
+    else:
+        print("=" * 60)
+        print(f"UPLOADING to {args.url}")
+        print("=" * 60)
+        print("Logging in...")
+        uploader.login()
+        print("Login successful.\n")
+
+    all_results = []
+    skipped = 0
+
+    def _upload_one(title: str, content: str, summary: str = "", idx: str = "",
+                    content_model: str = "") -> str:
+        """Upload a single page with skip-unchanged logic. Returns status string."""
+        nonlocal skipped
+        if args.skip_unchanged:
+            current = uploader.get_page_content(title)
+            if current is not None and current.rstrip() == content.rstrip():
+                skipped += 1
+                print(f"  {idx}unchanged: {title}")
+                return "unchanged"
+        resp = uploader.edit_page(title, content, summary=summary,
+                                  content_model=content_model)
+        edit_data = resp.get("edit", {})
+        if edit_data.get("result") == "Success":
+            status = "created" if edit_data.get("new") else "updated"
+            print(f"  {idx}{status}: {title}")
+            return status
+        else:
+            print(f"  {idx}ERROR: {title} — {resp.get('error', edit_data)}")
+            return "error"
+
+    # --- Phase 1: Lua data modules (Module:Data/*) ---
+    print("\n" + "-" * 40)
+    print("Phase 1: Lua Data Modules")
+    print("-" * 40)
+    if lua_dir.exists():
+        lua_files = sorted(lua_dir.glob("*.lua"))
+        print(f"  Found {len(lua_files)} Lua data modules")
+        for i, f in enumerate(lua_files, 1):
+            title = f"Module:Data/{f.stem}"
+            content = f.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  [{i}/{len(lua_files)}] would_upload: {title} ({len(content)} bytes)")
+            else:
+                _upload_one(title, content, summary="Update data module", idx=f"[{i}/{len(lua_files)}] ")
+    else:
+        print(f"  Skipped — {lua_dir}/ not found")
+
+    # --- Phase 2: Wiki rendering modules (Module:Infobox, etc.) ---
+    print("\n" + "-" * 40)
+    print("Phase 2: Wiki Rendering Modules")
+    print("-" * 40)
+    if wiki_modules_dir.exists():
+        lua_modules = sorted(wiki_modules_dir.glob("Module_*.lua"))
+        css_files = sorted(wiki_modules_dir.glob("TemplateStyles_*.css"))
+        print(f"  Found {len(lua_modules)} Lua modules, {len(css_files)} CSS files")
+
+        # Also collect module /doc pages (Module_Infobox_doc.wikitext → Module:Infobox/doc)
+        module_doc_files = sorted(wiki_modules_dir.glob("Module_*_doc.wikitext"))
+        print(f"  Found {len(lua_modules)} Lua modules, {len(css_files)} CSS files, {len(module_doc_files)} module doc pages")
+
+        for i, f in enumerate(lua_modules, 1):
+            # Module_Infobox.lua -> Module:Infobox
+            title = "Module:" + f.stem.replace("Module_", "")
+            content = f.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  [{i}] would_upload: {title} ({len(content)} bytes)")
+            else:
+                _upload_one(title, content, summary="Update rendering module", idx=f"[{i}] ")
+
+        for i, f in enumerate(module_doc_files, 1):
+            # Module_Infobox_doc.wikitext -> Module:Infobox/doc
+            stem = f.stem.replace("Module_", "")          # e.g. "Infobox_doc"
+            title = "Module:" + stem[:-4] + "/doc"        # strip "_doc", add /doc
+            content = f.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  [{i}] would_upload: {title} ({len(content)} bytes)")
+            else:
+                _upload_one(title, content, summary="Update module documentation", idx=f"[{i}] ")
+
+        for i, f in enumerate(css_files, 1):
+            # TemplateStyles_Infobox.css -> Template:TemplateStyles/Infobox.css
+            title = "Template:" + f.stem.replace("_", "/") + ".css"
+            content = f.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  [{i}] would_upload: {title} ({len(content)} bytes, sanitized-css)")
+            else:
+                _upload_one(title, content, summary="Update template styles",
+                            idx=f"[{i}] ", content_model="sanitized-css")
+    else:
+        print(f"  Skipped — {wiki_modules_dir}/ not found")
+
+    # --- Phase 3: Template wrappers ---
+    print("\n" + "-" * 40)
+    print("Phase 3: Template Wrappers")
+    print("-" * 40)
+    if wiki_modules_dir.exists():
+        template_files = sorted(wiki_modules_dir.glob("Template_*.wikitext"))
+        doc_count = sum(1 for f in template_files if f.stem.endswith("_doc"))
+        print(f"  Found {len(template_files) - doc_count} templates, {doc_count} template doc pages")
+
+        for i, f in enumerate(template_files, 1):
+            stem = f.stem.replace("Template_", "")
+            if stem.endswith("_doc"):
+                # Template_Infobox_Item_doc.wikitext -> Template:Infobox Item/doc
+                title = "Template:" + stem[:-4].replace("_", " ") + "/doc"
+                summary = "Update template documentation"
+            else:
+                # Template_Infobox_Item.wikitext -> Template:Infobox Item
+                title = "Template:" + stem.replace("_", " ")
+                summary = "Update template wrapper"
+            content = f.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  [{i}] would_upload: {title} ({len(content)} bytes)")
+            else:
+                _upload_one(title, content, summary=summary, idx=f"[{i}] ")
+    else:
+        print("  Skipped — no wiki_modules/ directory")
+
+    # --- Phase 4: Navbox templates ---
+    print("\n" + "-" * 40)
+    print("Phase 4: Navbox Templates")
+    print("-" * 40)
+    if navboxes_dir.exists():
+        navbox_files = sorted(navboxes_dir.glob("*.wikitext"))
+        print(f"  Found {len(navbox_files)} navbox files")
+
+        for i, f in enumerate(navbox_files, 1):
+            stem = f.stem
+            # Template_Navbox_Items.wikitext -> Template:Navbox Items
+            if stem.startswith("Template_"):
+                title = "Template:" + stem.replace("Template_", "").replace("_", " ")
+            else:
+                # Research_Tree.wikitext -> Research Tree (main namespace)
+                title = stem.replace("_", " ")
+            content = f.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  [{i}] would_upload: {title} ({len(content)} bytes)")
+            else:
+                _upload_one(title, content, summary="Update navbox", idx=f"[{i}] ")
+    else:
+        print(f"  Skipped — {navboxes_dir}/ not found")
+
+    # --- Phase 5: Content pages (items, buildings, research, elements, etc.) ---
+    print("\n" + "-" * 40)
+    print("Phase 5: Content Pages")
+    print("-" * 40)
+    if pages_dir.exists():
+        import json as _json
+        # Collect all page files from subdirectories (skip navboxes)
+        page_files = []
+        for subdir in sorted(pages_dir.iterdir()):
+            if not subdir.is_dir():
+                continue
+            if subdir.name == "navboxes":
+                continue  # handled in phase 4
+            # Load the title manifest if present (maps stem -> actual page title,
+            # needed for titles that contain characters sanitised in filenames,
+            # e.g. colons replaced with underscores by _safe_filename).
+            manifest_path = subdir / "_titles.json"
+            title_map: dict[str, str] = {}
+            if manifest_path.exists():
+                try:
+                    title_map = _json.loads(manifest_path.read_text(encoding="utf-8"))
+                except Exception:
+                    pass
+            for f in sorted(subdir.glob("*.wikitext")):
+                stem = f.stem
+                if stem in title_map:
+                    title = title_map[stem]
+                else:
+                    # Fallback: derive from filename (works for titles with no
+                    # special characters beyond spaces stored as underscores)
+                    title = stem.replace("_", " ")
+                page_files.append((title, f))
+
+        print(f"  Found {len(page_files)} content pages")
+
+        for i, (title, filepath) in enumerate(page_files, 1):
+            content = filepath.read_text(encoding="utf-8").rstrip()
+
+            if dry_run:
+                if i <= 5 or i == len(page_files):
+                    print(f"  [{i}/{len(page_files)}] would_upload: {title} ({len(content)} bytes)")
+                elif i == 6:
+                    print(f"  ... ({len(page_files) - 10} more pages) ...")
+            else:
+                try:
+                    _upload_one(title, content, idx=f"[{i}/{len(page_files)}] ")
+                except Exception as e:
+                    print(f"  [{i}/{len(page_files)}] ERROR: {title} — {e}")
+
+    else:
+        print(f"  Skipped — {pages_dir}/ not found")
+
+    # --- Phase 6: Images ---
+    print("\n" + "-" * 40)
+    print("Phase 6: Images")
+    print("-" * 40)
+    if args.images:
+        images_dir = Path(args.images)
+        if images_dir.exists():
+            image_files = sorted(
+                f for f in images_dir.glob("*")
+                if f.suffix.lower() in {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"}
+            )
+            overwrite = not getattr(args, "no_overwrite_images", False)
+            print(f"  Found {len(image_files)} image(s) in {images_dir}/")
+            if not overwrite:
+                print("  --no-overwrite-images set: existing files will be skipped")
+
+            for i, f in enumerate(image_files, 1):
+                dest = f.name  # already named Item_Foo.png etc.
+                if dry_run:
+                    if i <= 5 or i == len(image_files):
+                        print(f"  [{i}/{len(image_files)}] would_upload: File:{dest} ({f.stat().st_size} bytes)")
+                    elif i == 6:
+                        print(f"  ... ({len(image_files) - 6} more) ...")
+                else:
+                    try:
+                        result = uploader.upload_file(
+                            file_path=f,
+                            dest_filename=dest,
+                            overwrite=overwrite,
+                        )
+                        upload_info = result.get("upload", {})
+                        if "error" in result:
+                            code = result["error"].get("code", "?")
+                            info = result["error"].get("info", "")
+                            print(f"  [{i}/{len(image_files)}] ERROR: File:{dest} — {code}: {info}")
+                        elif upload_info.get("result") == "Success":
+                            print(f"  [{i}/{len(image_files)}] uploaded: File:{dest}")
+                        else:
+                            print(f"  [{i}/{len(image_files)}] ?: File:{dest} — {result}")
+                    except Exception as e:
+                        print(f"  [{i}/{len(image_files)}] ERROR: File:{dest} — {e}")
+        else:
+            print(f"  Images directory not found: {images_dir}")
+    else:
+        print("  Skipped — pass --images <dir> to upload images")

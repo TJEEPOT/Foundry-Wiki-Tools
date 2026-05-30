@@ -1,0 +1,258 @@
+<includeonly>
+{{Navbox2
+| name =
+| title = Buildings
+| listclass = hlist
+| striped = "even"
+
+| group1 = Production
+| list1 =
+* [[Advanced Smelter]]
+* [[Air Intake]]
+* [[Assembler I]]
+* [[Assembler II]]
+* [[Assembler III]]
+* [[Barrel Filler I]]
+* [[Blast Furnace]]
+* [[Casting Machine]]
+* [[Chemical Processor]]
+* [[Crusher I]]
+* [[Crusher II]]
+* [[Crystal Refiner]]
+* [[Distillation Column]]
+* [[Electric Arc Furnace]]
+* [[Flare Stack]]
+* [[Fluid Assembler I]]
+* [[Geothermal Boiler]]
+* [[Greenhouse]]
+* [[Heavy Caster]]
+* [[Hot Air Stove]]
+* [[Incinerator]]
+* [[Lava-Smelter I]]
+* [[Lava-Smelter II]]
+* [[Quarry]]
+* [[Reactor Fuel Mixer]]
+* [[Smelter (Small)]]
+* [[Steam Generator]]
+
+| group2 = Modular Buildings
+| list2 =
+* [[Air Intake Module]]
+* [[Blast Furnace Module]]
+* [[Fracking Tower]]
+* [[Fracking Tower Module]]
+* [[Hot Air Stove Module]]
+* [[Long Range Scanner]]
+* [[Modular Storage Tank (Module)]]
+* [[Module Debug Tool]]
+* [[Monument (Module)]]
+* [[Monument Base]]
+* [[Radio Tower]]
+* [[WGD[do not use]]]
+
+| group3 = Assembly Lines
+| list3 =
+* [[Assembly Line Logistics Container]]
+* [[Assembly Line Merger]]
+* [[Assembly Line Painter]]
+* [[Assembly Line Producer]]
+* [[Assembly Line Rail]]
+* [[Assembly Line Splitter]]
+* [[Assembly Line Start]]
+
+| group4 = Power Generation
+| list4 =
+* [[Biomass Burner]]
+* [[Boiler]]
+* [[Burner Generator]]
+* [[Cooling Tower]]
+* [[High-Pressure Turbine]]
+* [[Solar Panel (Large)]]
+* [[Solar Panel (Small)]]
+* [[Steam Turbine]]
+* [[Xeno Reactor]]
+
+| group5 = Power Distribution
+| list5 =
+* [[Battery (Large)]]
+* [[Battery (Small)]]
+* [[Power Pole (Large)]]
+* [[Power Pole (Small)]]
+* [[Power Pole (Wall-Mounted)]]
+* [[Transformer (Large)]]
+* [[Transformer (Small)]]
+
+| group6 = Solid Item Logistics
+| list6 =
+* [[Cargo Shuttle Start Pad]]
+* [[Cargo Shuttle Start Pad (Liquids)]]
+* [[Cargo Shuttle Target Pad]]
+* [[Cargo Shuttle Target Pad (Liquids)]]
+* [[Conveyor Balancer I]]
+* [[Conveyor Balancer II]]
+* [[Conveyor Balancer III]]
+* [[Conveyor Balancer IV]]
+* [[Conveyor I]]
+* [[Conveyor II]]
+* [[Conveyor III]]
+* [[Conveyor IV]]
+* [[Conveyor Slope I]]
+* [[Conveyor Slope II]]
+* [[Conveyor Slope III]]
+* [[Conveyor Slope IV]]
+* [[Filter Loader]]
+* [[Freight Elevator I]]
+* [[Freight Elevator II]]
+* [[Freight Elevator III]]
+* [[Freight Elevator IV]]
+* [[Loader]]
+* [[Loader (2nd Lane)]]
+* [[Loader (3rd Lane)]]
+* [[Shipping Pad (Medium)]]
+* [[Shipping Pad (Medium, Assembly Line)]]
+* [[Shipping Pad (Small)]]
+* [[Xeno-Logistics Tower]]
+
+| group7 = Liquid Handling
+| list7 =
+* [[Fracking Tower Base]]
+* [[Liquid Intake]]
+* [[Liquid Intake (Pipeline)]]
+* [[Modular Storage Tank]]
+* [[Pipe]]
+* [[Pipe Adapter]]
+* [[Pipe-to-Pipeline Pump]]
+* [[Pipeline]]
+* [[Pipeline-to-Pipe Pump]]
+* [[Pump (Pipelines)]]
+* [[Pump (Pipes)]]
+* [[Pumpjack I]]
+* [[Tank I]]
+
+| group8 = Resource Gathering
+| list8 =
+* [[Drone Miner I]]
+* [[Drone Miner II]]
+* [[Geological Scanner]]
+* [[Ore Vein Miner]]
+* [[Xeno-Crystal-Extractor]]
+* [[Xeno-Scrap-Extractor]]
+
+| group9 = Storage
+| list9 =
+* [[Container]]
+* [[Crate]]
+* [[Logistic Container I]]
+* [[Logistic Container II]]
+* [[Logistic Container III]]
+* [[Xeno-Logistics Container]]
+
+| group10 = Rail Transport
+| list10 =
+* [[Train Loading Station]]
+* [[Train Signal]]
+* [[Train Station]]
+
+| group11 = Construction
+| list11 =
+* [[Construction Ship Port]]
+* [[Construction Warehouse]]
+* [[Transport Ship Port]]
+
+| group12 = Data System
+| list12 =
+* [[Data Cable]]
+* [[Data Evaluator]]
+* [[Data Memory Cell]]
+* [[Data Processor]]
+* [[Data Source]]
+* [[Data Source (Button)]]
+* [[Data Source (Lever)]]
+
+| group13 = Science
+| list13 =
+* [[Research Server]]
+
+| group14 = Infrastructure
+| list14 =
+* [[Building Block]]
+* [[Ceiling Light I]]
+* [[Ceiling Light II]]
+* [[Door (Double)]]
+* [[Door (Single)]]
+* [[Drop Pods]]
+* [[Elevator]]
+* [[Emergency Beacon]]
+* [[Escalator I]]
+* [[Escalator II]]
+* [[Escalator III]]
+* [[Hangar Gate]]
+* [[Light Pole I]]
+* [[Light Pole II]]
+* [[Office Nameplate]]
+* [[Office Wall Plaque]]
+* [[Omni-Analyzer]]
+* [[Portable Light]]
+* [[Radio Tower Base]]
+* [[Sign]]
+* [[Space Station Machinery]]
+* [[Station Shuttle Pad]]
+* [[Walkway]]
+* [[Wall Light I]]
+
+| group15 = Recycling
+| list15 =
+* [[Resource Separator]]
+* [[Scrap Recycler]]
+
+| group16 = Miscellaneous
+| list16 =
+* [[C3-BB Hub]]
+* [[Construction Site Decor]]
+* [[Decor (Basic Shapes)]]
+* [[Decor (Misc)]]
+* [[Decor (Modular Windows)]]
+* [[Decor (Struts)]]
+* [[Decor (Support Truss)]]
+* [[Decor (Walls)]]
+* [[Decor (Windows Modular Slope Edge)]]
+* [[Decor (Windows Modular Slope)]]
+* [[Decor (Windows Modular Wedge)]]
+* [[Decor (Windows)]]
+* [[Drill Ship PREVIEW]]
+* [[Elevator Structure]]
+* [[Executive Office Chair]]
+* [[Executive Office Couch]]
+* [[Executive Office Desk]]
+* [[Executive Office File Cabinet]]
+* [[Executive Office Plant]]
+* [[Executive Office Table]]
+* [[Ladder]]
+* [[Neon Decor]]
+* [[Neon Decor (Large Slope Junctions)]]
+* [[Neon Decor (Large Slopes)]]
+* [[Neon Decor (Large)]]
+* [[Neon Decor (Slope Junctions)]]
+* [[Neon Decor (Slopes)]]
+* [[Office Chair]]
+* [[Office Couch]]
+* [[Office Desk]]
+* [[Office File Cabinet]]
+* [[Office Plant]]
+* [[Office Statue]]
+* [[Office Table]]
+* [[Railings]]
+* [[Robot Workstation I]]
+* [[Robot Workstation II]]
+* [[Robot Workstation III]]
+* [[Shaped Charge PREVIEW]]
+* [[Space Station Terminal]]
+* [[Stairs]]
+* [[Strut]]
+* [[Wooden Blocks]]
+* [[Wooden Decor Blocks]]
+* [[Xeno Power Core (Building)|Xeno Power Core]]
+}}</includeonly><noinclude>
+{{Documentation}}
+[[Category:Navigation templates]]
+</noinclude>

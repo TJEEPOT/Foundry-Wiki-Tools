@@ -214,6 +214,7 @@ class Building:
     # Modular building
     is_modular: bool
     modular_type: str
+    modular_producer_recipe_tags: list[str]
 
     # Workstation
     workstation_robot_slots: int
@@ -234,6 +235,21 @@ class Building:
     solar_output_min: float | None
     battery_capacity_kj: float | None
     transformer_rate: float | None
+    burner_generator_rate: float | None
+    lvg_generator_rate: float | None
+    npp_turbine_rate: float | None
+
+    # Grid / voltage
+    grid_type: str  # LowVoltage, HighVoltage, etc.
+
+    # Fluid box I/O (pipe connections)
+    io_fluid_boxes: list[dict[str, Any]]
+
+    # Walkways
+    has_walkways: bool
+
+    # Conveyor connection manager
+    has_conveyor_connection: bool
 
     # Conversion group (for upgrade paths)
     conversion_group: str
@@ -274,6 +290,7 @@ class Building:
             item_buffer_slots=data.get("itemBufferSlotMap", []),
             is_modular=bool(data.get("isModularBuilding", False)),
             modular_type=data.get("modularBuildingType", ""),
+            modular_producer_recipe_tags=data.get("modularProducer_recipeType_tags", []),
             workstation_robot_slots=int(data.get("workstation_robotSlotCount", 0)),
             workstation_effect_tags=[
                 # Tags come as "identifier|guid" — extract just the identifier
@@ -288,6 +305,13 @@ class Building:
             solar_output_min=_parse_numeric_str(data.get("solarPanel_outputMin_str")),
             battery_capacity_kj=_parse_numeric_str(data.get("battery_capacityKJ_str")),
             transformer_rate=_parse_numeric_str(data.get("transformer_transmissionRate_kjPerS_str")),
+            burner_generator_rate=_parse_numeric_str(data.get("burnerGenerator_powerGenertaionRate_kjPerS_str")),
+            lvg_generator_rate=_parse_numeric_str(data.get("lvgGenerator_transmissionRate_kjPerS_str")),
+            npp_turbine_rate=_parse_numeric_str(data.get("nppSteamTurbine_powerGenerationRate_kjPerSec_str")),
+            grid_type=data.get("spp_gridCheckType", ""),
+            io_fluid_boxes=data.get("fbm_ioFluidBoxes", []),
+            has_walkways=bool(data.get("hasIntraBuildingWalkways", False)),
+            has_conveyor_connection=bool(data.get("hasConveyorConnectionManager", False)),
             conversion_group=data.get("conversionGroup_str", ""),
             _raw=data,
         )
@@ -520,11 +544,20 @@ class Element:
     flags: list[str]
     pipe_content_type: int
     fuel_value_kj_per_l: float | None
+    color: str | None  # Pipe content color as #RRGGBB hex, from pipeContentColor r/g/b/a
 
     _raw: dict[str, Any] = field(repr=False, default_factory=dict)
 
     @classmethod
     def from_raw(cls, data: dict[str, Any]) -> Element:
+        # Parse pipeContentColor (r/g/b floats 0-1) to a #RRGGBB hex string
+        color: str | None = None
+        pc = data.get("pipeContentColor")
+        if pc and isinstance(pc, dict):
+            r = min(255, int(round(pc.get("r", 0) * 255)))
+            g = min(255, int(round(pc.get("g", 0) * 255)))
+            b = min(255, int(round(pc.get("b", 0) * 255)))
+            color = f"#{r:02X}{g:02X}{b:02X}"
         return cls(
             identifier=data.get("identifier", ""),
             name=data.get("name", ""),
@@ -532,6 +565,7 @@ class Element:
             flags=_parse_flags(data.get("flags", "")),
             pipe_content_type=int(data.get("pipeContentType", 0)),
             fuel_value_kj_per_l=_parse_numeric_str(data.get("fuel_fuelValueKJPerL_str")),
+            color=color,
             _raw=data,
         )
 

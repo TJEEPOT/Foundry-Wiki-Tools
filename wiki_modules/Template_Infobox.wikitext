@@ -1,0 +1,13 @@
+<includeonly>{{#switch: {{{type|}}}
+| item = {{#invoke:Infobox|item|id={{{id|}}}}}
+| building = {{#invoke:Infobox|building|id={{{id|}}}}}
+| research = {{#invoke:Infobox|research|id={{{id|}}}}}
+| element = {{#invoke:Infobox|element|id={{{id|}}}}}
+| exploration_unlock = {{#invoke:Infobox|exploration_unlock|id={{{id|}}}}}
+| sky_platform = {{#invoke:Infobox|sky_platform|id={{{id|}}}}}
+| #default = <span class="error">Unknown infobox type: {{{type|}}}</span>
+}}</includeonly><noinclude>
+{{doc}}
+Generic infobox dispatcher. Pass <code>type</code> and <code>id</code>.
+[[Category:Infobox templates]]
+</noinclude>

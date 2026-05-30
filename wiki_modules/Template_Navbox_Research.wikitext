@@ -1,0 +1,264 @@
+<includeonly>
+{{Navbox2
+| name =
+| title = Research
+| listclass = hlist
+| striped = "even"
+
+| group1 = Tier 1 (Starting)
+| list1 =
+* [[Emergency Beacon (Research)|Emergency Beacon]]
+
+| group2 = Tier 2
+| list2 =
+* [[Space Station Terminal (Research)|Space Station Terminal]]
+
+| group3 = Tier 3
+| list3 =
+* [[Assembler I (Research)|Assembler I]]
+
+| group4 = Tier 4
+| list4 =
+* [[Basic Infrastructure]]
+* [[Construction Drone]]
+
+| group5 = Tier 5
+| list5 =
+* [[Container (Research)|Container]]
+* [[Conveyor Balancer I (Research)|Conveyor Balancer I]]
+* [[Decor I]]
+* [[Door (Single) (Research)|Door (Single)]]
+* [[Inventory Size I]]
+* [[Ladder (Research)|Ladder]]
+* [[Lights I]]
+* [[Loader (2nd Lane) (Research)|Loader (2nd Lane)]]
+* [[Omni-Analyzer (Research)|Omni-Analyzer]]
+* [[Ore Scanner: Ignium]]
+* [[Railings (Research)|Railings]]
+* [[Signs]]
+* [[Stairs (Research)|Stairs]]
+
+| group6 = Tier 6
+| list6 =
+* [[Burner Generator (Research)|Burner Generator]]
+
+| group7 = Tier 7
+| list7 =
+* [[Transport Bot Assembly & Shipping]]
+
+| group8 = Tier 8
+| list8 =
+* [[Science Pack II (Research)|Science Pack II]]
+
+| group9 = Tier 9
+| list9 =
+* [[Conveyor II (Research)|Conveyor II]]
+* [[Decor II]]
+* [[Door (Double) (Research)|Door (Double)]]
+* [[Inventory Size II]]
+* [[Lights II]]
+* [[Logistic Container II (Research)|Logistic Container II]]
+* [[Office Furniture]]
+* [[Station: Antenna]]
+* [[Walkways]]
+
+| group10 = Tier 10
+| list10 =
+* [[Basic Steelmaking]]
+* [[Conveyor Balancer II (Research)|Conveyor Balancer II]]
+* [[Escalators I]]
+* [[Executive Office Furniture]]
+* [[Explosives (Research)|Explosives]]
+* [[Vacuum Bot Assembly]]
+
+| group11 = Tier 11
+| list11 =
+* [[Assembler II (Research)|Assembler II]]
+* [[Ore Refinement]]
+* [[Ore Scanner: Mineral Rock]]
+* [[Piping]]
+* [[Resource Separator (Research)|Resource Separator]]
+
+| group12 = Tier 12
+| list12 =
+* [[Concrete Production]]
+* [[High Voltage Energy Grid]]
+* [[Tank]]
+
+| group13 = Tier 13
+| list13 =
+* [[Basic Firmarlite Smelting]]
+* [[Glass Production]]
+* [[Incinerator (Research)|Incinerator]]
+* [[Power Pole (Wall-Mounted) (Research)|Power Pole (Wall-Mounted)]]
+* [[Science Pack III (Research)|Science Pack III]]
+* [[Trains]]
+
+| group14 = Tier 14
+| list14 =
+* [[Basic Olumite Processing]]
+* [[Construction Material (Research)|Construction Material]]
+* [[Decor III]]
+* [[Decor: Windows]]
+* [[Elevator (Research)|Elevator]]
+* [[Escalators II]]
+* [[Filter Loader (Research)|Filter Loader]]
+* [[Greenhouse (Research)|Greenhouse]]
+* [[Hangar Gate (Research)|Hangar Gate]]
+* [[Heavy Duty Transport Bot Assembly]]
+* [[Hover Engine (Research)|Hover Engine]]
+* [[Inventory Size III]]
+* [[Light Bot Assembly]]
+* [[Lights III]]
+* [[Loader (3rd Lane) (Research)|Loader (3rd Lane)]]
+* [[Mining Efficiency (1)]]
+* [[Mining Force I]]
+* [[Robot Workstations I]]
+* [[Snack Bot Assembly]]
+* [[Station: Hull Improvements]]
+
+| group15 = Tier 15
+| list15 =
+* [[Biomass Farming]]
+* [[Circuit Board (Research)|Circuit Board]]
+* [[Construction Site Decor (Research)|Construction Site Decor]]
+* [[Freight Elevator I (Research)|Freight Elevator I]]
+* [[Neon Decor (Research)|Neon Decor]]
+* [[Planter Drone Assembly]]
+* [[Power Pole (Large) (Research)|Power Pole (Large)]]
+* [[Shipping Pad (Medium) (Research)|Shipping Pad (Medium)]]
+
+| group16 = Tier 16
+| list16 =
+* [[Chemical Processing]]
+* [[Data Cable (Research)|Data Cable]]
+* [[Freight Elevator II (Research)|Freight Elevator II]]
+* [[Mining Drone Assembly]]
+* [[Operator Bot Assembly]]
+* [[Robot Workstations II]]
+* [[Screen Bot Assembly]]
+* [[Station: Orbital Laser]]
+* [[Transformer (Large) (Research)|Transformer (Large)]]
+
+| group17 = Tier 17
+| list17 =
+* [[Data Manipulation]]
+* [[Data Sources]]
+* [[Drone Miner II (Research)|Drone Miner II]]
+* [[Energy Cell (Research)|Energy Cell]]
+* [[Geothermal Power]]
+* [[Marble Blocks]]
+* [[Olumite Fuel]]
+
+| group18 = Tier 18
+| list18 =
+* [[Advanced Explosives]]
+* [[Battery (Small) (Research)|Battery (Small)]]
+* [[Jetpack]]
+* [[Maintenance Drone Production]]
+* [[Mining Efficiency (Demo)]]
+* [[Portable Light (Research)|Portable Light]]
+* [[Science Assistant Drone Assembly]]
+* [[Science Pack IV (Research)|Science Pack IV]]
+* [[Solar Panel]]
+* [[Space Ship Fuel Production]]
+
+| group19 = Tier 19
+| list19 =
+* [[Advanced Firmarlite Smelting]]
+* [[Advanced Steelmaking]]
+* [[Assembler III (Research)|Assembler III]]
+* [[Battery (Large) (Research)|Battery (Large)]]
+* [[Cargo Shuttles]]
+* [[Cleaning Bot Assembly]]
+* [[Combat Drone Assembly]]
+* [[Construction Industry]]
+* [[Conveyor III (Research)|Conveyor III]]
+* [[Escalators III]]
+* [[Heavy Explosive Charges]]
+* [[Ignium Fuel Rods]]
+* [[Inventory Size IV]]
+* [[Jetpack Speed I]]
+* [[Logistic Container III (Research)|Logistic Container III]]
+* [[Mining Efficiency (2)]]
+* [[Olumite Barreling]]
+* [[Ore Scanner: Telluxite Veins]]
+* [[Pipeline (Research)|Pipeline]]
+* [[Pumpjack Efficiency (1)]]
+* [[Shaped Charge (Research)|Shaped Charge]]
+* [[Solar Panel (Large) (Research)|Solar Panel (Large)]]
+* [[Station: Hull Expansion]]
+
+| group20 = Tier 20
+| list20 =
+* [[Cargo Shuttles (Liquids)]]
+* [[Conveyor Balancer III (Research)|Conveyor Balancer III]]
+* [[Long Range Scanner (Research)|Long Range Scanner]]
+* [[Modular Storage Tank (Research)|Modular Storage Tank]]
+* [[Monument]]
+* [[Ore Scanner: XF, TE, IG & MR Veins]]
+* [[Radio Tower (Research)|Radio Tower]]
+* [[Transport Drone Assembly]]
+* [[Underground Mining]]
+
+| group21 = Tier 21
+| list21 =
+* [[CPU Production]]
+* [[Robot Components]]
+
+| group22 = Tier 22
+| list22 =
+* [[Assembly Lines]]
+* [[Freight Elevator III (Research)|Freight Elevator III]]
+* [[Science Pack V (Research)|Science Pack V]]
+
+| group23 = Tier 23
+| list23 =
+* [[Air Intake (Research)|Air Intake]]
+* [[Combat Robot Assembly]]
+* [[Farmer Robot Assembly]]
+* [[Inventory Size V]]
+* [[Jetpack Speed II]]
+* [[Miner Robot Assembly]]
+* [[Mining Efficiency]]
+* [[Mining Force II]]
+* [[Personal Assistant Robot Assembly]]
+* [[Pumpjack Efficiency]]
+* [[Robot Workstations III]]
+* [[Rubber Production]]
+* [[Science Robot Assembly]]
+
+| group24 = Tier 24
+| list24 =
+* [[Blast Furnace (Research)|Blast Furnace]]
+* [[Conveyor IV (Research)|Conveyor IV]]
+* [[Fracking Tower (Research)|Fracking Tower]]
+* [[Freight Elevator IV (Research)|Freight Elevator IV]]
+* [[Operator Robot Assembly]]
+* [[Shaped Charge (Heavy) (Research)|Shaped Charge (Heavy)]]
+
+| group25 = Tier 25
+| list25 =
+* [[Conveyor Balancer IV (Research)|Conveyor Balancer IV]]
+* [[Slag Reprocessing]]
+* [[Superalloy Production]]
+
+| group26 = Tier 26
+| list26 =
+* [[Assault Robot Assembly]]
+* [[Hazard Robot Assembly]]
+* [[High-Tech Construction Material (Research)|High-Tech Construction Material]]
+* [[Nautical Chassis (Research)|Nautical Chassis]]
+* [[Scout Robot Assembly]]
+
+| group27 = Tier 27
+| list27 =
+* [[Aquatic Hauling Bot Assembly]]
+* [[Hydro-Farming Bot Assembly]]
+* [[Hydro-Mining Bot Assembly]]
+* [[Marine Exploration Bot Assembly]]
+* [[Xeno Power Plant]]
+}}</includeonly><noinclude>
+{{Documentation}}
+[[Category:Navigation templates]]
+</noinclude>

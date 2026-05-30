@@ -1,0 +1,9 @@
+<includeonly>{{#invoke:Infobox|research|id={{{id|}}}|image={{{image|}}}}}</includeonly><noinclude>
+{{doc}}
+Renders a research infobox. Pass the template identifier as <code>id</code>.
+
+Parameters:
+* <code>id</code> — research template identifier (required)
+* <code>image</code> — image filename, e.g. <code>Advanced Steelmaking.png</code> (optional)
+[[Category:Infobox templates]]
+</noinclude>

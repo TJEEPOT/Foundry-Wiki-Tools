@@ -1,0 +1,134 @@
+/* RecipeCard styles — Design B layout */
+
+/* Outer card container — clear: both pushes below the infobox float */
+.recipe-card {
+    clear: both;
+    margin: 0.5em 0 1em 0;
+}
+
+/* Extra separator between consecutive cards — no effect on a solo card */
+.recipe-card + .recipe-card {
+    margin-top: 1.5em;
+    padding-top: 1em;
+    border-top: 2px solid #c8ccd1;
+}
+
+/* === Recipe summary section === */
+.recipe-card-summary {
+    border: 1px solid #a2a9b1;
+    border-radius: 4px;
+    padding: 0.6em 0.8em;
+    background: #f8f9fa;
+    margin-bottom: 0.5em;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+}
+
+.recipe-card-header {
+    font-weight: bold;
+    font-size: 105%;
+    margin-bottom: 0.5em;
+}
+
+/* Input → Output flow layout */
+.recipe-card-flow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8em;
+}
+
+.recipe-card-io {
+    flex: 1;
+}
+
+.recipe-card-io-label {
+    font-size: 85%;
+    font-weight: bold;
+    color: #54595d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.2em;
+}
+
+.recipe-card-io-item {
+    line-height: 1.6;
+}
+
+.recipe-card-arrow {
+    font-size: 120%;
+    color: #72777d;
+    padding-top: 1.2em;
+    flex-shrink: 0;
+}
+
+.recipe-card-basetime {
+    font-size: 85%;
+    color: #72777d;
+    margin-top: 0.5em;
+    padding-top: 0.4em;
+    border-top: 1px solid #c8ccd1;
+}
+
+/* === Building rate cards grid === */
+.recipe-card-rates {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em;
+}
+
+.recipe-rate-card {
+    flex: 1 1 130px;
+    min-width: 120px;
+    max-width: 180px;
+    background: #f8f9fa;
+    border: 1px solid #c8ccd1;
+    border-radius: 4px;
+    padding: 0.5em 0.6em;
+}
+
+.recipe-rate-name {
+    font-size: 85%;
+    font-weight: bold;
+    color: #54595d;
+    margin-bottom: 0.2em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.recipe-rate-time {
+    font-size: 130%;
+    font-weight: bold;
+    line-height: 1.2;
+}
+
+.recipe-rate-time-label {
+    font-size: 80%;
+    color: #72777d;
+    margin-bottom: 0.3em;
+}
+
+/* Rate rows (In: / Out:) */
+.recipe-rate-row {
+    font-size: 90%;
+    line-height: 1.5;
+    border-top: 1px solid #eaecf0;
+    padding-top: 0.2em;
+    margin-top: 0.2em;
+}
+
+.recipe-rate-direction {
+    color: #54595d;
+    font-weight: bold;
+    margin-right: 0.3em;
+}
+
+.recipe-rate-values {
+    color: #202122;
+}
+
+/* Tooltip hint on rate abbreviations */
+.recipe-rate-values abbr {
+    text-decoration: none;
+    border-bottom: 1px dotted #72777d;
+    cursor: help;
+}

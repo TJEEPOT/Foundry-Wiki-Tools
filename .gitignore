@@ -130,31 +130,22 @@ dmypy.json
 
 
 # Custom
-# any Jupyter Notebooks
-*.ipynb
-
-# sqlite databases and backups
-*.sqlite
-*.backup
-
-# pickled objects
-*.pickle
-
-# ignore program output in CSV but not additional info for the db
-*.csv
-!model/db/*.csv
-
 # .vscode folder
 .vscode
 
-# all items in user settings folder
-user_data/
+# text documents
+*.docx
+*.txt
+SESSION_HANDOFF.md
 
-# any old json files
-*.json.old
+# generated folders
+/wiki_pages
+/wiki_images
+/diff_report
 
-# lnk files
-*.lnk
+# added folders
+/wiki_backup
+/image
 
-# JSON files
-*.json
+# Pycache
+*/__pycache__

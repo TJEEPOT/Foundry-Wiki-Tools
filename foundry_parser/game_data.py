@@ -183,6 +183,16 @@ class GameData:
                 self._recipe_inputs_index.setdefault(
                     inp.identifier, []
                 ).append(recipe_id)
+            # Also index elemental (fluid/gas) inputs and outputs so that
+            # element identifiers work in RecipeIndex lookups (RecipeTable, etc.)
+            for output in recipe.elemental_outputs:
+                self._recipe_outputs_index.setdefault(
+                    output.identifier, []
+                ).append(recipe_id)
+            for inp in recipe.elemental_inputs:
+                self._recipe_inputs_index.setdefault(
+                    inp.identifier, []
+                ).append(recipe_id)
 
     def _build_research_index(self) -> None:
         self._research_unlocks_index.clear()
@@ -206,7 +216,10 @@ class GameData:
         for recipe_id, recipe in self.recipes.items():
             for tag in recipe.tags:
                 tag_to_recipes.setdefault(tag, []).append(recipe_id)
+        crafting_types = {"Producer", "AutoProducer", "QuarryBuilding"}
         for building_id, building in self.buildings.items():
+            if building.type not in crafting_types:
+                continue
             recipe_ids: list[str] = []
             for tag in building.producer_recipe_tags:
                 recipe_ids.extend(tag_to_recipes.get(tag, []))
@@ -214,6 +227,8 @@ class GameData:
                 recipe_ids.extend(
                     tag_to_recipes.get(building.auto_producer_tag, [])
                 )
+            for tag in building.modular_producer_recipe_tags:
+                recipe_ids.extend(tag_to_recipes.get(tag, []))
             if recipe_ids:
                 self._building_recipes_index[building_id] = sorted(
                     set(recipe_ids)

@@ -1,0 +1,149 @@
+/* Infobox styling for Foundry Wiki */
+.foundry-infobox {
+    float: right;
+    clear: right;
+    margin: 0 0 1em 1.4em;
+    width: 300px;
+    border: 1px solid #a2a9b1;
+    border-collapse: collapse;
+    background: #f8f9fa;
+    font-size: 90%;
+    line-height: 1.5;
+}
+
+.foundry-infobox caption {
+    background: #1a1a2e;
+    color: #fff;
+    font-size: 110%;
+    font-weight: bold;
+    padding: 0.5em;
+}
+
+.foundry-infobox th {
+    background: #eaecf0;
+    text-align: left;
+    vertical-align: top;
+    padding: 0.3em 0.6em;
+    width: 35%;
+    font-weight: normal;
+    border: 1px solid #a2a9b1;
+}
+
+.foundry-infobox td {
+    vertical-align: top;
+    padding: 0.3em 0.6em;
+    border: 1px solid #a2a9b1;
+}
+
+.foundry-infobox .infobox-image {
+    text-align: center;
+    padding: 0.5em;
+    background: #fff;
+    border-bottom: 1px solid #a2a9b1;
+}
+
+.foundry-infobox .infobox-image img {
+    max-width: 250px;
+    max-height: 250px;
+}
+
+.foundry-infobox .infobox-section {
+    background: #dfe3e8;
+    text-align: center;
+    font-weight: bold;
+    padding: 0.3em;
+    border: 1px solid #a2a9b1;
+}
+
+.foundry-infobox .infobox-description {
+    padding: 0.5em;
+    font-style: italic;
+    text-align: center;
+    border-bottom: 1px solid #a2a9b1;
+    background: #fff;
+}
+
+.foundry-infobox .infobox-walkway {
+    text-align: center;
+    padding: 0.4em;
+    background: #d5e5f0;
+    border: 1px solid #a2a9b1;
+    font-size: 95%;
+}
+
+/* Item link inline styling */
+.item-link {
+    white-space: nowrap;
+}
+
+.item-link .item-icon {
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-right: 2px;
+}
+
+.item-link .item-count {
+    font-size: 85%;
+    color: #555;
+    margin-left: 2px;
+}
+
+/* Research card styling */
+.research-card {
+    border: 1px solid #a2a9b1;
+    background: #f8f9fa;
+    padding: 0.6em 0.8em;
+    margin-bottom: 0.8em;
+    font-size: 90%;
+    line-height: 1.5;
+}
+
+.research-card-title {
+    font-weight: bold;
+    font-size: 110%;
+    margin-bottom: 0.3em;
+}
+
+.research-card-desc {
+    font-style: italic;
+    color: #555;
+    margin-bottom: 0.4em;
+}
+
+.research-card-details {
+    margin-top: 0.3em;
+}
+
+.research-card-row {
+    margin: 0.15em 0;
+}
+
+.research-card-label {
+    font-weight: bold;
+}
+
+/* Recipe table styling */
+.recipe-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0.5em 0;
+}
+
+.recipe-table th {
+    background: #eaecf0;
+    border: 1px solid #a2a9b1;
+    padding: 0.3em 0.5em;
+    text-align: left;
+    font-weight: bold;
+}
+
+.recipe-table td {
+    border: 1px solid #a2a9b1;
+    padding: 0.3em 0.5em;
+    vertical-align: top;
+}
+
+.recipe-table tr:nth-child(even) {
+    background: #f8f9fa;
+}

@@ -1,0 +1,5 @@
+<includeonly>{{#invoke:Infobox|exploration_unlock|id={{{id|}}}|image={{{image|}}}}}</includeonly><noinclude>
+{{doc}}
+Renders an exploration unlock infobox. Pass the template identifier as <code>id</code> and optionally an image filename as <code>image</code>.
+[[Category:Infobox templates]]
+</noinclude>

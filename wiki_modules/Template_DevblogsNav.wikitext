@@ -1,0 +1,22 @@
+<noinclude>Navigation box shown at the bottom of every [[Foundry Fridays]] DevBlog page.
+Add new entries to the list below in chronological order.
+[[Category:Navigation templates]]
+[[Category:Templates]]
+</noinclude><includeonly>{{Navbox
+| name  = DevblogsNav
+| title = [[Foundry Fridays]] DevBlogs
+| state = autocollapse
+
+| group1 = 2024
+| list1  =
+<!-- Add DevBlog links here, e.g.: [[DevBlog 1]] • [[DevBlog 2]] -->
+
+| group2 = 2025
+| list2  =
+<!-- Add DevBlog links here, e.g.: [[DevBlog 50]] • [[DevBlog 51]] -->
+
+| group3 = 2026
+| list3  =
+<!-- Add DevBlog links here, e.g.: [[DevBlog 100]] • [[DevBlog 101]] • [[DevBlog 102]] • [[DevBlog 103]] • [[DevBlog 104]] -->
+
+}}</includeonly>
