@@ -662,9 +662,9 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     print("-" * 40)
     if wiki_modules_dir.exists():
         lua_modules = sorted(wiki_modules_dir.glob("Module_*.lua"))
-        css_files = sorted(wiki_modules_dir.glob("TemplateStyles_*.css"))
-        print(f"  Found {len(lua_modules)} Lua modules, {len(css_files)} CSS files")
-
+        # Template_Infobox_styles.css  -> Template:Infobox/styles.css
+        # Template_Navbox2_style.css   -> Template:Navbox2/style.css
+        css_files = sorted(wiki_modules_dir.glob("Template_*_style*.css"))
         # Also collect module /doc pages (Module_Infobox_doc.wikitext → Module:Infobox/doc)
         module_doc_files = sorted(wiki_modules_dir.glob("Module_*_doc.wikitext"))
         print(f"  Found {len(lua_modules)} Lua modules, {len(css_files)} CSS files, {len(module_doc_files)} module doc pages")
@@ -679,9 +679,14 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
                 _upload_one(title, content, summary="Update rendering module", idx=f"[{i}] ")
 
         for i, f in enumerate(module_doc_files, 1):
-            # Module_Infobox_doc.wikitext -> Module:Infobox/doc
-            stem = f.stem.replace("Module_", "")          # e.g. "Infobox_doc"
-            title = "Module:" + stem[:-4] + "/doc"        # strip "_doc", add /doc
+            # Module_Infobox_doc.wikitext      -> Module:Infobox/doc
+            # Module_Data_Buildings_doc.wikitext -> Module:Data/Buildings/doc
+            stem = f.stem.replace("Module_", "")          # e.g. "Infobox_doc" or "Data_Buildings_doc"
+            stem = stem[:-4]                               # strip "_doc" -> "Infobox" or "Data_Buildings"
+            # "Data_Buildings" must become "Data/Buildings", not "Data Buildings"
+            if stem.startswith("Data_"):
+                stem = "Data/" + stem[5:]
+            title = "Module:" + stem + "/doc"
             content = f.read_text(encoding="utf-8")
             if dry_run:
                 print(f"  [{i}] would_upload: {title} ({len(content)} bytes)")
@@ -689,8 +694,11 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
                 _upload_one(title, content, summary="Update module documentation", idx=f"[{i}] ")
 
         for i, f in enumerate(css_files, 1):
-            # TemplateStyles_Infobox.css -> Template:TemplateStyles/Infobox.css
-            title = "Template:" + f.stem.replace("_", "/") + ".css"
+            # Template_Infobox_styles.css -> Template:Infobox/styles.css
+            # Template_Navbox2_style.css  -> Template:Navbox2/style.css
+            stem = f.stem.replace("Template_", "", 1)   # e.g. "Infobox_styles" or "Navbox2_style"
+            name, suffix = stem.rsplit("_", 1)           # ("Infobox", "styles") or ("Navbox2", "style")
+            title = f"Template:{name}/{suffix}.css"
             content = f.read_text(encoding="utf-8")
             if dry_run:
                 print(f"  [{i}] would_upload: {title} ({len(content)} bytes, sanitized-css)")

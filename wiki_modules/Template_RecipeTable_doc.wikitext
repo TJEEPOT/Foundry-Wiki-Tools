@@ -1,0 +1,29 @@
+{{doc/start}}
+Renders a sortable wikitable of recipes for an item or element, with columns for recipe name, inputs, outputs, craft time, and crafting building(s). Backed by [[Module:RecipeTable]].
+
+Use [[Template:RecipeTable Building]] to show all recipes craftable in a specific building, or [[Template:RecipeTable Recipe]] to display a single recipe row by its identifier.
+
+== Usage ==
+<pre>
+{{RecipeTable|_base_iron_ingot}}
+{{RecipeTable|id=_base_iron_ingot|mode=producing}}
+{{RecipeTable|id=_base_iron_ingot|mode=consuming}}
+{{RecipeTable|id=_base_iron_ingot|mode=all}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> / <code>id</code> || Item or element template identifier (e.g. <code>_base_iron_ingot</code>). || String || Required
+|-
+| <code>mode</code> || Which recipes to show: <code>producing</code> (default) — recipes that output this item; <code>consuming</code> — recipes that consume it; <code>all</code> — both. || String || Optional
+|}
+
+== Notes ==
+* Recipe data comes from [[Module:Data/Recipes]] and [[Module:Data/RecipeIndex]].
+* Crafting buildings are resolved via [[Module:Data/RecipeBuildingNames]] and linked as <code>NAME (Building)</code>.
+* Elemental inputs/outputs are shown with a litre (<code>L</code>) unit.
+* The table is sortable by any column.
+* If no matching recipes exist, the template outputs nothing.
+{{doc/end}}

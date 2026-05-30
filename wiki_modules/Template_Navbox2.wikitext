@@ -1,4 +1,4 @@
 <includeonly><templatestyles src="Navbox2/style.css" />{{#invoke:Navbox|navbox}}</includeonly><noinclude>
-{{documentation}}
+{{doc}}
 [[Category:Navigation templates]]
 </noinclude>

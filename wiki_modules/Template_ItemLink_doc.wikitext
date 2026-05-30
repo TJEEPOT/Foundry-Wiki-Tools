@@ -1,0 +1,30 @@
+{{doc/start}}
+Renders an inline item link with an optional icon and quantity badge. Backed by [[Module:ItemLink]], which resolves the identifier against [[Module:Data/Items]], [[Module:Data/Buildings]], [[Module:Data/Elements]], and [[Module:Data/Research]].
+
+== Usage ==
+<pre>
+{{ItemLink|_base_iron_ingot}}
+{{ItemLink|_base_iron_ingot|5}}
+{{ItemLink|id=_base_iron_ingot|count=5}}
+{{ItemLink|_base_iron_ingot|noicon=1}}
+</pre>
+
+Rendered output (icon + link + count badge):
+<pre>[[File:Iron_Ingot_icon.png|16px|link=Iron Ingot]] [[Iron Ingot]] ×5</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> / <code>id</code> || Template identifier of the item, building, element, or research entry (e.g. <code>_base_iron_ingot</code>). || String || Required
+|-
+| <code>2</code> / <code>count</code> || Quantity to display as a badge after the link (e.g. <code>5</code> renders as ×5). Numbers are formatted with comma separators. || Number || Optional
+|-
+| <code>noicon</code> || Set to <code>1</code> to suppress the 16 px icon; only the text link is rendered. || Flag || Optional
+|}
+
+== Notes ==
+* Icons are resolved as <code>File:{Name}_icon.png</code> (spaces replaced with underscores).
+* If the identifier is not found in any data module, a humanized version of the raw identifier is used as the fallback display name.
+* The template accepts both positional (<code>{{ItemLink|id|count}}</code>) and named (<code>{{ItemLink|id=…|count=…}}</code>) parameters.
+{{doc/end}}

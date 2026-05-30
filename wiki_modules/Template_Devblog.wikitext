@@ -1,10 +1,6 @@
 <includeonly>'''Foundry Fridays''' DevBlog, published on {{#time: F j, Y|{{{date}}}}}.
 The original post can be viewed on [{{{steam}}} Steam].
 [[Category:Foundry Fridays]]</includeonly><noinclude>
-== Usage ==
-<pre>{{Devblog|date=YYYY-MM-DD|steam=STEAM_URL}}</pre>
-
-; date   : Publication date in <code>YYYY-MM-DD</code> format.
-; steam  : Full URL to the Steam news post.
+{{doc}}
 [[Category:Templates]]
 </noinclude>

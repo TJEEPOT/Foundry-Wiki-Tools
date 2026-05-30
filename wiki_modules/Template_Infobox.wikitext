@@ -8,6 +8,5 @@
 | #default = <span class="error">Unknown infobox type: {{{type|}}}</span>
 }}</includeonly><noinclude>
 {{doc}}
-Generic infobox dispatcher. Pass <code>type</code> and <code>id</code>.
 [[Category:Infobox templates]]
 </noinclude>

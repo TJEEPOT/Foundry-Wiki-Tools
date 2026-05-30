@@ -259,6 +259,6 @@
 * [[Marine Exploration Bot Assembly]]
 * [[Xeno Power Plant]]
 }}</includeonly><noinclude>
-{{Documentation}}
+{{doc}}
 [[Category:Navigation templates]]
 </noinclude>

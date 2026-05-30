@@ -148,4 +148,4 @@ SESSION_HANDOFF.md
 /image
 
 # Pycache
-*/__pycache__
+/foundry_parser/__pycache__/

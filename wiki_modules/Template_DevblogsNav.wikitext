@@ -1,5 +1,5 @@
-<noinclude>Navigation box shown at the bottom of every [[Foundry Fridays]] DevBlog page.
-Add new entries to the list below in chronological order.
+<noinclude>
+{{doc}}
 [[Category:Navigation templates]]
 [[Category:Templates]]
 </noinclude><includeonly>{{Navbox

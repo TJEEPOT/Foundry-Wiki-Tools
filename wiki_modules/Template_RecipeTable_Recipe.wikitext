@@ -1,1 +1,5 @@
 {{#invoke:RecipeTable|recipe|id={{{1|{{{id|}}}}}}}}
+<noinclude>
+{{doc}}
+[[Category:Data templates]]
+</noinclude>

@@ -1,0 +1,26 @@
+{{doc/start}}
+Adds a standard header line and Steam link to a Foundry Fridays DevBlog page, and categorises the page into [[:Category:Foundry Fridays]].
+
+== Usage ==
+<pre>
+{{Devblog|date=2024-03-15|steam=https://store.steampowered.com/news/app/XXXXXX/view/YYYYYYY}}
+</pre>
+
+The template renders as:
+
+<blockquote>'''Foundry Fridays''' DevBlog, published on March 15, 2024. The original post can be viewed on [URL Steam].</blockquote>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>date</code> || Publication date in <code>YYYY-MM-DD</code> format (e.g. <code>2024-03-15</code>). Parsed by <code>{{#time}}</code> and formatted as "Month Day, Year". || Date string || Required
+|-
+| <code>steam</code> || Full URL to the Steam news or announcement post (e.g. <code><nowiki>https://store.steampowered.com/news/app/XXXXXX/view/YYYYYYY</nowiki></code>). || URL || Required
+|}
+
+== Notes ==
+* Place this template at the very top of the DevBlog page, before any article content.
+* The template automatically adds the page to [[:Category:Foundry Fridays]].
+* Each DevBlog page should also transclude [[Template:DevblogsNav]] at the bottom for navigation.
+{{doc/end}}

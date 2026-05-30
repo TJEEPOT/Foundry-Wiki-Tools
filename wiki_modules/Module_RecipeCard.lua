@@ -167,7 +167,7 @@ local function render_recipe_card(recipe_id)
 
     -- TemplateStyles
     local styles = mw.getCurrentFrame():extensionTag(
-        'templatestyles', '', { src = 'Template:TemplateStyles/RecipeCard.css' }
+        'templatestyles', '', { src = 'Template:RecipeCard/styles.css' }
     )
 
     -- Outer wrapper

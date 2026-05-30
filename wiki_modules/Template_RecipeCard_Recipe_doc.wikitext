@@ -1,0 +1,22 @@
+{{doc/start}}
+Renders a single recipe card for a specific recipe by its identifier. Shows inputs, outputs, base craft time, and per-building throughput rates. Backed by [[Module:RecipeCard]]'s <code>recipe</code> function.
+
+== Usage ==
+<pre>
+{{RecipeCard Recipe|_base_conveyor_i}}
+{{RecipeCard Recipe|id=_base_conveyor_i}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> / <code>id</code> || Recipe template identifier (e.g. <code>_base_conveyor_i</code>). This is the recipe's own identifier, not the output item's identifier. || String || Required
+|}
+
+== Notes ==
+* Recipe identifiers can be found in [[Module:Data/Recipes]].
+* Use [[Template:RecipeCard]] (with an item or element id) when you want to show all recipes that produce or consume a particular thing.
+* Per-building throughput rates come from [[Module:Data/RecipeCraftingData]].
+* If the recipe identifier is not found, the template outputs nothing.
+{{doc/end}}

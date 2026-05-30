@@ -1,0 +1,42 @@
+{{doc/start}}
+Lua module that renders an inline item link with an optional 16 px icon and quantity badge. Called by [[Template:ItemLink]].
+
+The module resolves the given identifier against [[Module:Data/Items]], [[Module:Data/Buildings]], [[Module:Data/Elements]], and [[Module:Data/Research]] in that order to find the display name.
+
+== Exported functions ==
+
+=== <code>p.main(frame)</code> ===
+Primary entry point, called by <code>{{#invoke:ItemLink|main|…}}</code> and by [[Template:ItemLink]].
+
+Parameters (via <code>frame.args</code>):
+
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>id</code> / <code>1</code> || Template identifier of the entity (e.g. <code>_base_iron_ingot</code>). || String || Required
+|-
+| <code>count</code> / <code>2</code> || Quantity to display as a ×N badge after the link. || Number || Optional
+|-
+| <code>noicon</code> || Set to <code>1</code> to suppress the icon; only the text link is rendered. || Flag || Optional
+|}
+
+=== <code>p.link(frame)</code> ===
+Alias for <code>p.main</code>. Accepts the same parameters.
+
+== Rendering details ==
+* Icon: <code>[[File:{Name}_icon.png|16px|link=Name|class=item-icon]]</code> (spaces → underscores in filename).
+* Link: <code>[[Name]]</code>
+* Count badge: <code><span class="item-count">×N</span></code> with comma-formatted numbers.
+* The whole output is wrapped in <code><span class="item-link">…</span></code>.
+
+== Notes ==
+* If the identifier is not found in any data module, the module humanizes the raw identifier as a fallback (camelCase split, underscores to spaces).
+* Data modules are lazy-loaded and cached within a single page render.
+* Icon files follow the convention <code>File:{DisplayName}_icon.png</code>; if an icon is missing the wikilink will simply show as a broken-image placeholder.
+
+== Example ==
+<pre>
+{{ItemLink|_base_iron_ingot|5}}
+→ [[File:Iron_Ingot_icon.png|16px|link=Iron Ingot]] [[Iron Ingot]] ×5
+</pre>
+{{doc/end}}

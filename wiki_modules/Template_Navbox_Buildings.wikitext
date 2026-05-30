@@ -253,6 +253,6 @@
 * [[Wooden Decor Blocks]]
 * [[Xeno Power Core (Building)|Xeno Power Core]]
 }}</includeonly><noinclude>
-{{Documentation}}
+{{doc}}
 [[Category:Navigation templates]]
 </noinclude>

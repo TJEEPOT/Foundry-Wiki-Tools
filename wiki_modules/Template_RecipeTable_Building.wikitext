@@ -1,9 +1,4 @@
 <includeonly>{{#invoke:RecipeTable|building|id={{{1|{{{id|}}}}}}}}</includeonly><noinclude>
 {{doc}}
-Renders a recipe table for a building (all recipes craftable in the building).
-
-'''Parameters:'''
-* '''1''' (or '''id'''): Building template identifier (required)
-
 [[Category:Data templates]]
 </noinclude>

@@ -1,0 +1,26 @@
+{{doc/start}}
+Navigation box listing all research nodes in Foundry, grouped by tier. Placed at the bottom of every research page. Built on [[Template:Navbox2]].
+
+== Usage ==
+<pre>{{Navbox Research}}</pre>
+
+No parameters. Place at the very end of a research article, after all sections.
+
+== Groups ==
+Each group corresponds to a research tier, from Tier 1 (Emergency Beacon, the starting node) through Tier 27. Tier is computed by recursive dependency depth: a research node with no prerequisites is Tier 1; each additional prerequisite hop adds one tier.
+
+The navbox currently spans 27 tiers.
+
+== Maintenance ==
+This navbox is maintained by hand. When research changes between game versions:
+# Update the relevant tier group(s) in <code>[[Template:Navbox Research]]</code>.
+# Regenerate research data with <code>python -B -m foundry_parser generate-lua</code> so [[Module:Data/Research]] stays current.
+# Regenerate pages with <code>python -B -m foundry_parser generate-pages</code> to update tier values shown in infoboxes.
+
+Research pages are generated automatically and already include <code><nowiki>{{Navbox Research}}</nowiki></code> at the bottom.
+
+== Notes ==
+* Disambiguated research pages (where a research node shares a name with a building or item) use a <code>(Research)</code> suffix in the link label but show the plain name in the link text, e.g. <code><nowiki>[[Assembler I (Research)|Assembler I]]</nowiki></code>.
+* Infinite research nodes (e.g. Mining Efficiency, Pumpjack Efficiency) appear once even though they repeat in-game.
+* Tier numbers may shift when new research is added or prerequisites change — check the infobox tier value after any regeneration.
+{{doc/end}}

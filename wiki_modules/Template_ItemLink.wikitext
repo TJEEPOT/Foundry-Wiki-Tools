@@ -1,16 +1,4 @@
 <includeonly>{{#invoke:ItemLink|main|id={{{1|{{{id|}}}}}}|count={{{2|{{{count|}}}}}}|noicon={{{noicon|}}}}}</includeonly><noinclude>
 {{doc}}
-Renders an inline item link with optional icon and count.
-
-'''Usage:'''
-* <code><nowiki>{{ItemLink|IronIngot}}</nowiki></code> — link with icon
-* <code><nowiki>{{ItemLink|IronIngot|5}}</nowiki></code> — link with icon and ×5 count
-* <code><nowiki>{{ItemLink|IronIngot|noicon=1}}</nowiki></code> — text link only
-
-'''Parameters:'''
-* '''1''' (or '''id'''): Item template identifier (required)
-* '''2''' (or '''count'''): Quantity to display (optional)
-* '''noicon''': Set to 1 to suppress the icon (optional)
-
 [[Category:Link templates]]
 </noinclude>

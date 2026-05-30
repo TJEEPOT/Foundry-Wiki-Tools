@@ -1,9 +1,4 @@
 <includeonly>{{#invoke:Infobox|item|id={{{id|}}}|image={{{image|}}}}}</includeonly><noinclude>
 {{doc}}
-Renders an item infobox. Pass the template identifier as <code>id</code>.
-
-Parameters:
-* <code>id</code> — item template identifier (required)
-* <code>image</code> — image filename, e.g. <code>Iron Ingot.png</code> (optional)
 [[Category:Infobox templates]]
 </noinclude>

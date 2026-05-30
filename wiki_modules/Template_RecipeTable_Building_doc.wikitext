@@ -1,0 +1,22 @@
+{{doc/start}}
+Renders a sortable wikitable of all recipes craftable in a specific building, with columns for recipe name, inputs, outputs, and craft time. The building column is omitted since it is implicit. Backed by [[Module:RecipeTable]]'s <code>building</code> function.
+
+== Usage ==
+<pre>
+{{RecipeTable Building|_base_assembler_i}}
+{{RecipeTable Building|id=_base_assembler_i}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> / <code>id</code> || Building template identifier (e.g. <code>_base_assembler_i</code> for Assembler I, <code>_base_smelter_i</code> for Smelter I). || String || Required
+|}
+
+== Notes ==
+* Recipes are looked up via [[Module:Data/BuildingRecipeIndex]], keyed by building template identifier.
+* The Building column is suppressed in this view (it would always be the same building).
+* For displaying recipes by item, use [[Template:RecipeTable]].
+* If the building has no associated recipes, the template outputs nothing.
+{{doc/end}}

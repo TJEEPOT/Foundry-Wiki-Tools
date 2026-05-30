@@ -1,0 +1,22 @@
+{{doc/start}}
+Renders recipe cards for all recipes that can be crafted in a specific building. Each card shows inputs, outputs, base craft time, and per-building throughput rates. Backed by [[Module:RecipeCard]]'s <code>building</code> function.
+
+== Usage ==
+<pre>
+{{RecipeCard Building|_base_assembler_i}}
+{{RecipeCard Building|id=_base_assembler_i}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> / <code>id</code> || Building template identifier (e.g. <code>_base_assembler_i</code> for Assembler I). || String || Required
+|}
+
+== Notes ==
+* Recipes are looked up via [[Module:Data/BuildingRecipeIndex]], keyed by building identifier.
+* Per-building throughput rates come from [[Module:Data/RecipeCraftingData]].
+* If the building has no associated recipes, the template outputs nothing.
+* For displaying recipes by item rather than by building, use [[Template:RecipeCard]].
+{{doc/end}}

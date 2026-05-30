@@ -1,0 +1,22 @@
+{{doc/start}}
+Renders a single-row sortable wikitable for a specific recipe by its identifier, showing recipe name, inputs, outputs, craft time, and crafting building(s). Backed by [[Module:RecipeTable]]'s <code>recipe</code> function.
+
+== Usage ==
+<pre>
+{{RecipeTable Recipe|_base_conveyor_i}}
+{{RecipeTable Recipe|id=_base_conveyor_i}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> / <code>id</code> || Recipe template identifier (e.g. <code>_base_conveyor_i</code>). This is the recipe's own identifier, not the output item's identifier. || String || Required
+|}
+
+== Notes ==
+* Recipe identifiers can be found in [[Module:Data/Recipes]].
+* Use [[Template:RecipeTable]] (with an item or element id) when you want to show all recipes that produce or consume a particular thing.
+* Crafting buildings are resolved via [[Module:Data/RecipeBuildingNames]] and linked as <code>NAME (Building)</code>.
+* If the recipe identifier is not found, the template outputs nothing.
+{{doc/end}}

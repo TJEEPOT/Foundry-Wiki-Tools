@@ -1,0 +1,28 @@
+{{doc/start}}
+Renders one or more visual recipe cards for an item or element, showing inputs, outputs, base craft time, and per-building throughput rates. Backed by [[Module:RecipeCard]].
+
+Use [[Template:RecipeCard Building]] to show all recipes for a specific building, or [[Template:RecipeCard Recipe]] to display a single recipe by its identifier.
+
+== Usage ==
+<pre>
+{{RecipeCard|id=_base_iron_ingot}}
+{{RecipeCard|id=_base_iron_ingot|mode=producing}}
+{{RecipeCard|id=_base_iron_ingot|mode=consuming}}
+{{RecipeCard|id=_base_iron_ingot|mode=all}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>id</code> || Item or element template identifier (e.g. <code>_base_iron_ingot</code>). || String || Required
+|-
+| <code>mode</code> || Which recipes to show: <code>producing</code> (default) — recipes that output this item; <code>consuming</code> — recipes that consume it; <code>all</code> — both. || String || Optional
+|}
+
+== Notes ==
+* Recipe data comes from [[Module:Data/Recipes]] and [[Module:Data/RecipeIndex]].
+* Per-building rates (items/minute) are computed from [[Module:Data/RecipeCraftingData]] and displayed with <code>&lt;abbr&gt;</code> tooltips showing the item name.
+* Elemental inputs/outputs (fluids and gases) are displayed with a litre (<code>L</code>) unit.
+* If no matching recipes exist, the template outputs nothing.
+{{doc/end}}

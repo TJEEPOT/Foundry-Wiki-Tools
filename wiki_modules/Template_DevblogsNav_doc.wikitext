@@ -1,0 +1,27 @@
+{{doc/start}}
+Navigation box displayed at the bottom of every [[Foundry Fridays]] DevBlog page, grouping entries by year. Uses the standard <code>{{Navbox}}</code> template with <code>autocollapse</code> state.
+
+== Usage ==
+Add <code><nowiki>{{DevblogsNav}}</nowiki></code> at the bottom of each DevBlog page:
+
+<pre>
+{{DevblogsNav}}
+</pre>
+
+This template takes no parameters — all DevBlog links are maintained directly inside the template itself.
+
+== Maintaining the navigation list ==
+To add a new DevBlog entry, edit [[Template:DevblogsNav]] and add a link to the appropriate year group in chronological order:
+
+<pre>
+| group2 = 2025
+| list2  =
+[[Foundry Fridays 42]] • [[Foundry Fridays 43]] • [[Foundry Fridays 44]]
+</pre>
+
+Year groups are numbered sequentially (<code>group1</code> = 2024, <code>group2</code> = 2025, <code>group3</code> = 2026). Add a new group when a new year begins.
+
+== Notes ==
+* The navbox uses <code>state=autocollapse</code>: it is collapsed when other navboxes are present on the same page, expanded when it is the only one.
+* This template is sorted into [[:Category:Navigation templates]] and [[:Category:Templates]] via its own template page — not through this doc page.
+{{doc/end}}

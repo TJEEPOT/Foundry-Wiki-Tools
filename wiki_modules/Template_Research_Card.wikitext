@@ -1,13 +1,4 @@
 <includeonly>{{#invoke:Infobox|research_card|id={{{1|{{{id|}}}}}}}}</includeonly><noinclude>
 {{doc}}
-Renders a compact research card showing name, description, costs, prerequisites, and unlocks.
-
-'''Usage:'''
-* <code><nowiki>{{Research Card|_base_iron_ingot}}</nowiki></code>
-* <code><nowiki>{{Research Card|id=_base_iron_ingot}}</nowiki></code>
-
-'''Parameters:'''
-* '''1''' (or '''id'''): Research template identifier (required)
-
 [[Category:Data templates]]
 </noinclude>

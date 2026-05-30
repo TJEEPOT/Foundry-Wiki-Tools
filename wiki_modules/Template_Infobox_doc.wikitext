@@ -1,0 +1,27 @@
+{{doc/start}}
+Generic dispatcher template that routes to the correct infobox rendering function based on the entity type. Used internally by the type-specific infobox templates; most pages should use one of those instead.
+
+== Usage ==
+<pre>
+{{Infobox|type=item|id=_base_iron_ingot}}
+{{Infobox|type=building|id=_base_assembler_i}}
+{{Infobox|type=research|id=_base_research_basic_iron_smelting}}
+{{Infobox|type=element|id=_base_water}}
+{{Infobox|type=exploration_unlock|id=_base_eu_iron_ore}}
+{{Infobox|type=sky_platform|id=_base_spu_power_i}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>type</code> || Entity type. One of: <code>item</code>, <code>building</code>, <code>research</code>, <code>element</code>, <code>exploration_unlock</code>, <code>sky_platform</code>. || String || Required
+|-
+| <code>id</code> || Template identifier for the entity, as used in the game data (e.g. <code>_base_iron_ingot</code>). || String || Required
+|}
+
+== Notes ==
+* All rendering is delegated to [[Module:Infobox]].
+* If an unknown <code>type</code> is passed, an error span is shown.
+* Prefer the type-specific templates ([[Template:Infobox Item]], [[Template:Infobox Building]], etc.) which also accept an <code>image</code> override.
+{{doc/end}}

@@ -1,9 +1,4 @@
 <includeonly>{{#invoke:Infobox|building|id={{{id|}}}|image={{{image|}}}}}</includeonly><noinclude>
 {{doc}}
-Renders a building infobox. Pass the template identifier as <code>id</code>.
-
-Parameters:
-* <code>id</code> — building template identifier (required)
-* <code>image</code> — image filename, e.g. <code>Smelter I.png</code> (optional)
 [[Category:Infobox templates]]
 </noinclude>

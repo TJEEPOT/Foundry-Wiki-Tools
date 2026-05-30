@@ -158,7 +158,7 @@ end
 local function create_infobox(frame, caption)
     local styles = frame:extensionTag({
         name = 'templatestyles',
-        args = { src = 'Template:TemplateStyles/Infobox.css' }
+        args = { src = 'Template:Infobox/styles.css' }
     })
     local tbl = mw.html.create('table')
         :addClass('foundry-infobox')
@@ -843,7 +843,7 @@ function p.research_card(frame)
     -- Build a compact card using a styled div
     local styles = frame:extensionTag({
         name = 'templatestyles',
-        args = { src = 'Template:TemplateStyles/Infobox.css' }
+        args = { src = 'Template:Infobox/styles.css' }
     })
 
     local card = mw.html.create('div')

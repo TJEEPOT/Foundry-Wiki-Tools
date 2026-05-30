@@ -1,15 +1,4 @@
 <includeonly>{{#invoke:RecipeTable|main|id={{{1|{{{id|}}}}}}|mode={{{mode|producing}}}}}</includeonly><noinclude>
 {{doc}}
-Renders a recipe table for an item or element.
-
-'''Usage:'''
-* <code><nowiki>{{RecipeTable|IronIngot}}</nowiki></code> — recipes that produce Iron Ingot
-* <code><nowiki>{{RecipeTable|IronIngot|mode=consuming}}</nowiki></code> — recipes that consume Iron Ingot
-* <code><nowiki>{{RecipeTable|IronIngot|mode=all}}</nowiki></code> — all recipes involving Iron Ingot
-
-'''Parameters:'''
-* '''1''' (or '''id'''): Item or element template identifier (required)
-* '''mode''': <code>producing</code> (default), <code>consuming</code>, or <code>all</code>
-
 [[Category:Data templates]]
 </noinclude>
