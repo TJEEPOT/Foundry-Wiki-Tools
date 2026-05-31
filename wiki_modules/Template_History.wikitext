@@ -1,0 +1,4 @@
+<includeonly><templatestyles src="Template:History/styles.css"/><div class="history-entry"><span class="history-version">{{{1}}}:</span>{{{2|}}}</div></includeonly><noinclude>
+{{doc}}
+[[Category:Formatting templates]]
+</noinclude>

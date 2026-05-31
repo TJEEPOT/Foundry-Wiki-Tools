@@ -1,0 +1,38 @@
+{{doc/start}}
+Renders a single version history entry, showing a bold version label followed by a bullet list of changes. Stack multiple instances in the <code>== History ==</code> section of a page, one per version, in reverse chronological order (newest first).
+
+== Usage ==
+<pre>
+{{History|VERSION|
+* Change description.
+* Another change.
+}}
+</pre>
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Type !! Status
+|-
+| <code>1</code> || Version identifier, e.g. <code>Update 2 (Early Access)</code> or <code>0.4.3</code>. Displayed in bold followed by a colon. Can be a plain string or a wikilink. || String || Required
+|-
+| <code>2</code> || Wikitext bullet list of changes introduced in this version. Each item should start with <code>*</code> on its own line. || Wikitext || Required
+|}
+
+== Examples ==
+<pre>
+{{History|Update 2: Galactic Commerce (Early Access)|
+* Added Galactic Market.
+* Reworked shipping pad throughput.
+}}
+
+{{History|Update 1 (Early Access)|
+* Initial Early Access release.
+}}
+</pre>
+
+== Notes ==
+* Place entries in reverse chronological order — newest version at the top of the History section.
+* The version label can be a wikilink to the relevant patch note page: <code><nowiki>[[Update 2 (Early Access)|Update 2: Galactic Commerce]]</nowiki></code>.
+* Styles are loaded from <code>[[Template:History/styles.css]]</code>.
+* This template replaces the older <code><nowiki>{{History table}}</nowiki></code> placeholder.
+{{doc/end}}

@@ -578,8 +578,11 @@ def _generate_item_page(item: Item, gd: GameData, *, registry: PageTitleRegistry
 
     # History section (placeholder for patch notes)
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     # See Also — real section if disambiguation siblings exist, placeholder otherwise
@@ -655,8 +658,11 @@ def _generate_building_page(building: Building, gd: GameData, *, registry: PageT
 
     # History section (placeholder for patch notes)
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     # See Also — real section if disambiguation siblings exist, placeholder otherwise
@@ -797,8 +803,11 @@ def _generate_research_page(research: Research, gd: GameData, *, registry: PageT
 
     # History section
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     # See Also — real section if disambiguation siblings exist, placeholder otherwise
@@ -855,8 +864,11 @@ def _generate_element_page(element: Element, gd: GameData, *, registry: PageTitl
 
     # History section
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     # See Also — real section if disambiguation siblings exist, placeholder otherwise
@@ -1126,8 +1138,11 @@ def _generate_exploration_unlock_page(unlock, gd: GameData, *, registry: PageTit
 
     # History section
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     # See Also — real section if disambiguation siblings exist, placeholder otherwise
@@ -1175,8 +1190,11 @@ def _generate_sky_platform_page(upgrade, gd: GameData, *, registry: PageTitleReg
 
     # History section
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     # See Also — real section if disambiguation siblings exist, placeholder otherwise
@@ -1390,8 +1408,11 @@ def _generate_commands_page(gd: GameData) -> str:
     lines.append("")
 
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     lines.extend(_render_see_also(None, "Commands", "Commands"))
@@ -1433,8 +1454,11 @@ def _generate_emotes_page(gd: GameData) -> str:
     lines.append("")
 
     lines.append("== History ==")
-    lines.append("")
-    lines.append("{{History table}}")
+    lines.append("<!--")
+    lines.append("{{History|VERSION|")
+    lines.append("* ")
+    lines.append("}}")
+    lines.append("-->")
     lines.append("")
 
     lines.extend(_render_see_also(None, "Emotes", "Emotes"))
@@ -1490,8 +1514,11 @@ def _generate_achievements_page() -> str:
         "{{#invoke:Achievements|remaining}}",
         "",
         "== History ==",
-        "",
-        "{{History table}}",
+        "<!--",
+        "{{History|VERSION|",
+        "* ",
+        "}}",
+        "-->",
         "",
         "[[Category:Gameplay]]",
     ]
