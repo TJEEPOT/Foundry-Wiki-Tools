@@ -48,7 +48,6 @@
 * [[Monument (Module)]]
 * [[Monument Base]]
 * [[Radio Tower]]
-* [[WGD[do not use]]]
 
 | group3 = Assembly Lines
 | list3 =
@@ -245,7 +244,6 @@
 * [[Robot Workstation I]]
 * [[Robot Workstation II]]
 * [[Robot Workstation III]]
-* [[Shaped Charge PREVIEW]]
 * [[Space Station Terminal]]
 * [[Stairs]]
 * [[Strut]]
