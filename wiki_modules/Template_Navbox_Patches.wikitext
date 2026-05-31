@@ -1,0 +1,56 @@
+<templatestyles src="Navbox Patches/styles.css"/>{{#if:{{{nospace|}}}||<br/>
+}}{{Navbox
+| name       = Navbox Patches
+| title      = [[:Category:Patch notes|Patches]]
+| titlestyle = background-color: #eee
+| groupstyle = background-color: #eee; color: #202122
+| bodystyle  = text-align: center
+| listclass  = hlist
+| groupwidth = 7em
+| state      = {{{state|expanded}}}
+
+| group1 = Early Access
+| list1 =
+<div class="navbox-patches-ea">{{Navbox
+ | listclass  = hlist
+ | groupwidth = 10em
+ | state      = {{{state|expanded}}}
+
+ | group1 = [[Update 1 (Early Access)|Update 1: Cables & Creations]]
+ | list1 =  [[Hotfix 1 (Early Access)|1.0 Hotfix 1]] {{*}} [[Hotfix 2 (Early Access)|1.0 Hotfix 2]] {{*}} [[Hotfix 3 (Early Access)|1.0 Hotfix 3]]
+
+ | group2 = [[Update 2 (Early Access) Galactic Commerce|Update 2: Galactic Commerce]]
+ | list2 =  [[Update 2.1 (Early Access)|2.1]] {{*}} [[Update 2.1 Hotfix 1 (Early Access)|2.1 Hotfix 1]] {{*}} [[Update 2.1 Hotfix 2 (Early Access)|2.1 Hotfix 2]] {{*}} [[Update 2.2 (Early Access)|2.2]] {{*}} [[Update 2.2 Hotfix 1 (Early Access)|2.2 Hotfix 1]] {{*}} [[Update 2.2 Hotfix 2 (Early Access)|2.2 Hotfix 2]] {{*}} [[Update 2.2 Hotfix 3 (Early Access)|2.2 Hotfix 3]]
+
+ | group3 = [[Update 3 (Early Access)|Update 3: Xeno-Tech]]
+ | list3 =  [[Update 3 Hotfix 1 (Early Access)|3.0 Hotfix 1]]
+
+ | group4 = [[Update 4 (Early Access)|Update 4: Rails & Reactors]]
+ | list4 =  [[Update 4 Hotfix 1 (Early Access)|4.0 Hotfix 1]] {{*}} [[Update 4 Hotfix 2 (Early Access)|4.0 Hotfix 2]]
+
+ | group5 = Update 5
+ | list5 = <!-- Add Update 5 patches here -->
+
+}}</div>
+
+| group2 = Alpha
+| list2 =
+<div class="navbox-patches-alpha">{{Navbox
+ | listclass  = hlist
+ | groupwidth = 10em
+ | state      = {{{state|expanded}}}
+
+ | group1 = Experimental 0.2
+ | list1 = [[Patch 0.2.1 (Experimental)|0.2.1]] {{*}} [[Patch 0.2.2 (Experimental)|0.2.2]]
+
+ | group2 = Experimental 0.3
+ | list2 = [[Patch 0.3 (Experimental)|0.3]]
+
+ | group3 = Experimental 0.4
+ | list3 = [[Patch 0.4 (Experimental)|0.4]] {{*}} [[Patch 0.4.3 (Experimental)|0.4.3]] {{*}} [[Patch 0.4.3.2564 (Experimental)|0.4.3.2564]] {{*}} [[Patch 0.4.3.2591 (Experimental)|0.4.3.2591]] {{*}} [[Patch 0.4.3.2627 (Experimental)|0.4.3.2627]] {{*}} [[Patch 0.4.3.2642 (Experimental)|0.4.3.2642]] {{*}} [[Patch 0.4.3.2675 (Experimental)|0.4.3.2675]] {{*}} [[Patch 0.4.3.2682 (Experimental)|0.4.3.2682]] {{*}} [[Patch 0.4.3.2702 (Experimental)|0.4.3.2702]] {{*}} [[Patch 0.4.3.2723 (Experimental)|0.4.3.2723]] {{*}} [[Patch 0.4.3.2725 (Experimental)|0.4.3.2725]] {{*}} [[Patch 0.4.3.3217 (Experimental)|0.4.3.3217]] {{*}} [[Patch 0.4.3.3230 (Experimental)|0.4.3.3230]] {{*}} [[Patch 0.4.3.3258 (Experimental)|0.4.3.3258]] {{*}} [[Patch 0.4.3.3260 (Experimental)|0.4.3.3260]] {{*}} [[Patch 0.4.3.3298 (Experimental)|0.4.3.3298]] {{*}} [[Patch 0.4.3.3320 (Experimental)|0.4.3.3320]] {{*}} [[Patch 0.4.3.3325 (Experimental)|0.4.3.3325]] {{*}} [[Patch 0.4.3.3348 (Experimental)|0.4.3.3348]] {{*}} [[Patch 0.4.3.3353 (Experimental)|0.4.3.3353]] {{*}} [[Patch 0.4.3.3378 (Experimental)|0.4.3.3378]] {{*}} [[Patch 0.4.3.3394 (Experimental)|0.4.3.3394]] {{*}} [[Patch 0.4.3.3405 (Experimental)|0.4.3.3405]] {{*}} [[Patch 0.4.3.3430 (Experimental)|0.4.3.3430]] {{*}} [[Patch 0.4.3.3441 (Experimental)|0.4.3.3441]] {{*}} [[Patch 0.4.3.3447 (Experimental)|0.4.3.3447]] {{*}} [[Patch 0.4.3.3466 (Experimental)|0.4.3.3466]] {{*}} [[Patch 0.4.3.3486 (Experimental)|0.4.3.3486]] {{*}} [[Patch 0.4.3.3492 (Experimental)|0.4.3.3492]] {{*}} [[Patch 0.4.3.3508 (Experimental)|0.4.3.3508]] {{*}} [[Patch 0.4.3.3576 (Experimental)|0.4.3.3576]] {{*}} [[Patch 0.4.3.3582 (Experimental)|0.4.3.3582]] {{*}} [[Patch 0.4.3.3602 (Experimental)|0.4.3.3602]] {{*}} [[Patch 0.4.3.3612 (Experimental)|0.4.3.3612]] {{*}} [[Patch 0.4.3.3670 (Experimental)|0.4.3.3670]] {{*}} [[Patch 0.4.3.3693 (Experimental)|0.4.3.3693]] {{*}} [[Patch 0.4.3.3703 (Experimental)|0.4.3.3703]] {{*}} [[Patch 0.4.3.3727 (Experimental)|0.4.3.3727]] {{*}} [[Patch 0.4.3.3746 (Experimental)|0.4.3.3746]] {{*}} [[Patch 0.4.3.3756 (Experimental)|0.4.3.3756]] {{*}} [[Patch 0.4.3.3784 (Experimental)|0.4.3.3784]]
+
+}}</div>
+}}<noinclude>
+{{doc}}
+[[Category:Navigation templates]]
+</noinclude>

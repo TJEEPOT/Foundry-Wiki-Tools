@@ -22,5 +22,5 @@ The template renders as:
 == Notes ==
 * Place this template at the very top of the DevBlog page, before any article content.
 * The template automatically adds the page to [[:Category:Foundry Fridays]].
-* Each DevBlog page should also transclude [[Template:DevblogsNav]] at the bottom for navigation.
+* Each DevBlog page should also transclude [[Template:Navbox Devblogs]] at the bottom for navigation.
 {{doc/end}}

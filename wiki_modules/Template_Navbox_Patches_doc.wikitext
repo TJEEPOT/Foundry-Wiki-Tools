@@ -1,0 +1,44 @@
+{{doc/start}}
+Navigation box displayed at the bottom of every patch note and hotfix page, organising all Foundry releases by stage (Early Access, Alpha) and by major update number within Early Access.
+
+== Usage ==
+<pre>{{Navbox Patches}}</pre>
+
+No parameters are required. Place at the very end of a patch note article, after all sections.
+
+== Parameters ==
+{| class="wikitable"
+! Parameter !! Description !! Default
+|-
+| <code>state</code> || Collapse state of the navbox: <code>expanded</code> or <code>collapsed</code>. || <code>expanded</code>
+|-
+| <code>nospace</code> || Set to any value to suppress the <code>&lt;br/&gt;</code> spacer added above the navbox. Useful when the navbox immediately follows another navbox. || —
+|}
+
+== Structure ==
+The navbox is divided into two top-level stages:
+
+=== Early Access ===
+Organised by major update number. Each group contains the main update page and all associated hotfixes in release order.
+
+=== Alpha ===
+Organised by Experimental version series (0.2, 0.3, 0.4).
+
+== Styling ==
+Styles are loaded from <code>[[Template:Navbox Patches/styles.css]]</code>. The colour scheme is:
+* '''Gold''' (<code>#FFD700</code>) — Early Access update group headers
+* '''Blue''' (<code>#2ECCFA</code>) — Alpha/Experimental group headers
+* '''Light grey''' (<code>#eee</code>) — outer navbox and body backgrounds
+* '''Mid grey''' (<code>#D8D8D8</code>) — alternating odd rows in inner navboxes
+
+== Maintenance ==
+To add a new patch:
+# Add a link to the appropriate update group in <code>[[Template:Navbox Patches]]</code>.
+# Use the format <code><nowiki>[[Page Name (Early Access)|Display Label]]</nowiki></code>.
+# When a new major update is released, add its entries to the next numbered group and leave the remaining placeholder groups for future use.
+# Add a new group when the numbered placeholders run out.
+
+== Notes ==
+* This template uses <code><nowiki>{{Navbox}}</nowiki></code> (the standard MediaWiki navbox) with nested inner navboxes, not <code><nowiki>{{Navbox2}}</nowiki></code>.
+* The <code>state</code> parameter propagates to the inner navboxes so that all sections expand or collapse together.
+{{doc/end}}

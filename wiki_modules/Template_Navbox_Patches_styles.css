@@ -1,0 +1,54 @@
+/* ================================================================
+   Template:Navbox Patches — patch note navigation box styles
+   Applied via <div> wrappers around the inner navboxes, since the
+   wiki's {{Navbox}} template does not support class= parameters.
+
+   Outer navbox title/group colours use inline styles on the
+   {{Navbox}} call directly (titlestyle, groupstyle, bodystyle).
+   ================================================================ */
+
+/* --- Shared: force inner navbox tables to fill their cell --- */
+.navbox-patches-ea,
+.navbox-patches-ea table,
+.navbox-patches-alpha,
+.navbox-patches-alpha table {
+    width: 100%;
+}
+
+/* --- Early Access inner navbox --- */
+.navbox-patches-ea .navbox-group,
+.navbox-patches-alpha .navbox-group {
+    width: 15em; /* wide enough to prevent wrapping on longest update names */
+    min-width: 15em;
+}
+
+.navbox-patches-ea .navbox-group {
+    text-align: center;
+    background-color: #FFD700; /* gold — Early Access release colour */
+    color: #202122;
+}
+
+.navbox-patches-ea .navbox-odd {
+    background-color: #D8D8D8;
+}
+
+.navbox-patches-ea .navbox-list {
+    padding: 0 0.25em;
+    color: #202122;
+}
+
+/* --- Alpha inner navbox --- */
+.navbox-patches-alpha .navbox-group {
+    text-align: center;
+    background-color: #2ECCFA; /* blue — Experimental/Alpha release colour */
+    color: #202122;
+}
+
+.navbox-patches-alpha .navbox-odd {
+    background-color: #D8D8D8;
+}
+
+.navbox-patches-alpha .navbox-list {
+    padding: 0 0.25em;
+    color: #202122;
+}

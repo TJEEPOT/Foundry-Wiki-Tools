@@ -1,0 +1,31 @@
+<noinclude>
+{{doc}}
+[[Category:Navigation templates]]
+[[Category:Templates]]
+</noinclude><includeonly>{{Navbox
+| name  = Navbox Devblogs
+| title = [[Foundry Fridays]] DevBlogs
+| state = autocollapse
+
+| group1 = 2020
+| list1  = <!-- Add DevBlog links here, e.g.: [[DevBlog 1]] • [[DevBlog 2]] -->
+
+| group2 = 2021
+| list2  =
+
+| group3 = 2022
+| list3  =
+
+| group3 = 2023
+| list4  =
+
+| group3 = 2024
+| list5  =
+
+| group3 = 2025
+| list6  =
+
+| group3 = 2026
+| list7  = [[DevBlog 102]] • [[DevBlog 103]] • [[DevBlog 104]]
+
+}}</includeonly>
