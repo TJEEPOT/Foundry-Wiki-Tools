@@ -48,11 +48,9 @@ The navbox is divided into the following categories:
 == Maintenance ==
 This navbox is maintained by hand. When a new building is added to the game:
 # Add the page link under the appropriate group in <code>[[Template:Navbox Buildings]]</code>.
-# Re-generate building data with <code>python -B -m foundry_parser generate-lua</code> so [[Module:Data/Buildings]] stays current.
 
-Building pages themselves are generated automatically by <code>foundry_parser generate-pages</code> and already include <code><nowiki>{{Navbox Buildings}}</nowiki></code> at the bottom.
+Building pages themselves are generated automatically and already include <code><nowiki>{{Navbox Buildings}}</nowiki></code> at the bottom.
 
 == Notes ==
-* Development placeholder buildings (e.g. <code>WGD[do not use]</code>, <code>Drill Ship PREVIEW</code>, <code>Shaped Charge PREVIEW</code>) are listed under Miscellaneous but should ideally carry a "not obtainable" banner on their own pages.
 * Module buildings (e.g. Air Intake Module) are listed separately under Modular Buildings rather than alongside their base.
 {{doc/end}}

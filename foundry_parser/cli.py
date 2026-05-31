@@ -222,10 +222,14 @@ def main() -> None:
     )
     p_nav.add_argument("game_dir", help="Path to Foundry game directory")
     p_nav.add_argument(
-        "--output",
-        "-o",
-        default="wiki_pages/navboxes",
-        help="Output directory (default: wiki_pages/navboxes/)",
+        "--wiki-modules",
+        default="wiki_modules",
+        help="Directory for Template_Navbox_*.wikitext files (default: wiki_modules/)",
+    )
+    p_nav.add_argument(
+        "--pages",
+        default="wiki_pages",
+        help="Directory for the Research Tree page (default: wiki_pages/)",
     )
 
     # generate-lua command
@@ -335,11 +339,6 @@ def main() -> None:
         "--wiki-modules",
         default="wiki_modules",
         help="Wiki rendering modules directory (default: wiki_modules/)",
-    )
-    p_batch.add_argument(
-        "--navboxes",
-        default=None,
-        help="Navboxes directory (default: <pages>/navboxes/)",
     )
     p_batch.add_argument(
         "--dry-run",
@@ -508,8 +507,11 @@ def cmd_generate_navboxes(args: argparse.Namespace) -> None:
     print(f"Parsed {total} entities.\n")
 
     print("Generating navboxes...")
-    output_dir = Path(args.output)
-    results = generate_all_navboxes(gd, output_dir)
+    results = generate_all_navboxes(
+        gd,
+        wiki_modules_dir=Path(args.wiki_modules),
+        pages_dir=Path(args.pages),
+    )
 
     print(f"\nDone! {len(results)} navigation files generated.")
 
@@ -563,7 +565,6 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     pages_dir = Path(args.pages)
     lua_dir = Path(args.lua)
     wiki_modules_dir = Path(args.wiki_modules)
-    navboxes_dir = Path(args.navboxes) if args.navboxes else pages_dir / "navboxes"
 
     # --- Optionally regenerate everything first ---
     if args.generate:
@@ -586,11 +587,10 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
         print("\nGenerating wiki pages...")
         generate_all_pages(gd, pages_dir)
 
-        # Generate navboxes
+        # Generate navboxes — templates go to wiki_modules/, Research Tree to pages_dir
         from .navbox_generator import generate_all_navboxes
         print("\nGenerating navboxes...")
-        navboxes_dir.mkdir(parents=True, exist_ok=True)
-        generate_all_navboxes(gd, navboxes_dir)
+        generate_all_navboxes(gd, wiki_modules_dir=wiki_modules_dir, pages_dir=pages_dir)
 
         print()
 
@@ -753,31 +753,23 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     else:
         print("  Skipped — no wiki_modules/ directory")
 
-    # --- Phase 4: Navbox templates ---
+    # --- Phase 4: Research Tree (main-namespace navigation page) ---
+    # Template_Navbox_*.wikitext files are now in wiki_modules/ and handled by Phase 3.
     print("\n" + "-" * 40)
-    print("Phase 4: Navbox Templates")
+    print("Phase 4: Research Tree")
     print("-" * 40)
     if not _run_phases:
         print("  Skipped — images-only mode")
-    elif navboxes_dir.exists():
-        navbox_files = sorted(navboxes_dir.glob("*.wikitext"))
-        print(f"  Found {len(navbox_files)} navbox files")
-
-        for i, f in enumerate(navbox_files, 1):
-            stem = f.stem
-            # Template_Navbox_Items.wikitext -> Template:Navbox Items
-            if stem.startswith("Template_"):
-                title = "Template:" + stem.replace("Template_", "").replace("_", " ")
-            else:
-                # Research_Tree.wikitext -> Research Tree (main namespace)
-                title = stem.replace("_", " ")
-            content = f.read_text(encoding="utf-8")
-            if dry_run:
-                print(f"  [{i}] would_upload: {title} ({len(content)} bytes)")
-            else:
-                _upload_one(title, content, summary="Update navbox", idx=f"[{i}] ")
     else:
-        print(f"  Skipped — {navboxes_dir}/ not found")
+        research_tree = pages_dir / "Research_Tree.wikitext"
+        if research_tree.exists():
+            content = research_tree.read_text(encoding="utf-8")
+            if dry_run:
+                print(f"  would_upload: Research Tree ({len(content)} bytes)")
+            else:
+                _upload_one("Research Tree", content, summary="Update research tree")
+        else:
+            print(f"  Skipped — Research_Tree.wikitext not found in {pages_dir}/")
 
     # --- Phase 5: Content pages (items, buildings, research, elements, etc.) ---
     print("\n" + "-" * 40)

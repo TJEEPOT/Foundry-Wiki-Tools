@@ -143,7 +143,7 @@ def _navbox_footer() -> str:
     """Generate the closing of a Navbox2 template."""
     return (
         "}}</includeonly><noinclude>\n"
-        "{{Documentation}}\n"
+        "{{doc}}\n"
         "[[Category:Navigation templates]]\n"
         "</noinclude>\n"
     )
@@ -612,15 +612,24 @@ def generate_sky_platform_navbox(gd: GameData) -> str:
 
 def generate_all_navboxes(
     gd: GameData,
-    output_dir: Path,
+    wiki_modules_dir: Path,
+    pages_dir: Path | None = None,
     verbose: bool = True,
 ) -> dict[str, str]:
     """
     Generate all navbox templates and the research tree page.
 
-    Returns dict of filename -> description.
+    Template_Navbox_*.wikitext files are written to *wiki_modules_dir* so they
+    are picked up by the batch-upload Phase 3 (wiki modules) alongside all other
+    templates.  The Research Tree page (main namespace, not a Template) is written
+    to *pages_dir* if provided, otherwise to *wiki_modules_dir*.
+
+    Returns dict of wiki title -> description.
     """
-    output_dir.mkdir(parents=True, exist_ok=True)
+    wiki_modules_dir.mkdir(parents=True, exist_ok=True)
+    tree_dir = pages_dir if pages_dir is not None else wiki_modules_dir
+    if pages_dir is not None:
+        pages_dir.mkdir(parents=True, exist_ok=True)
 
     def log(msg: str) -> None:
         if verbose:
@@ -628,52 +637,24 @@ def generate_all_navboxes(
 
     results = {}
 
-    # Items navbox
-    content = generate_items_navbox(gd)
-    path = output_dir / "Template_Navbox_Items.wikitext"
-    path.write_text(content, encoding="utf-8")
-    results["Template:Navbox Items"] = "Items navigation"
-    log(f"  Generated: Template:Navbox Items")
+    navboxes = [
+        ("Template_Navbox_Items.wikitext",                generate_items_navbox,              "Template:Navbox Items",                "Items navigation"),
+        ("Template_Navbox_Buildings.wikitext",             generate_buildings_navbox,           "Template:Navbox Buildings",            "Buildings navigation"),
+        ("Template_Navbox_Research.wikitext",              generate_research_navbox,            "Template:Navbox Research",             "Research navigation"),
+        ("Template_Navbox_Elements.wikitext",              generate_elements_navbox,            "Template:Navbox Elements",             "Elements navigation"),
+        ("Template_Navbox_Exploration_Unlocks.wikitext",   generate_exploration_unlocks_navbox, "Template:Navbox Exploration Unlocks",  "Exploration Unlocks navigation"),
+        ("Template_Navbox_Space_Station_Upgrades.wikitext",generate_sky_platform_navbox,        "Template:Navbox Space Station Upgrades","Space Station Upgrades navigation"),
+    ]
 
-    # Buildings navbox
-    content = generate_buildings_navbox(gd)
-    path = output_dir / "Template_Navbox_Buildings.wikitext"
-    path.write_text(content, encoding="utf-8")
-    results["Template:Navbox Buildings"] = "Buildings navigation"
-    log(f"  Generated: Template:Navbox Buildings")
+    for filename, generator_fn, title, description in navboxes:
+        content = generator_fn(gd)
+        (wiki_modules_dir / filename).write_text(content, encoding="utf-8")
+        results[title] = description
+        log(f"  Generated: {title}")
 
-    # Research navbox
-    content = generate_research_navbox(gd)
-    path = output_dir / "Template_Navbox_Research.wikitext"
-    path.write_text(content, encoding="utf-8")
-    results["Template:Navbox Research"] = "Research navigation"
-    log(f"  Generated: Template:Navbox Research")
-
-    # Elements navbox
-    content = generate_elements_navbox(gd)
-    path = output_dir / "Template_Navbox_Elements.wikitext"
-    path.write_text(content, encoding="utf-8")
-    results["Template:Navbox Elements"] = "Elements navigation"
-    log(f"  Generated: Template:Navbox Elements")
-
-    # Exploration Unlocks navbox
-    content = generate_exploration_unlocks_navbox(gd)
-    path = output_dir / "Template_Navbox_Exploration_Unlocks.wikitext"
-    path.write_text(content, encoding="utf-8")
-    results["Template:Navbox Exploration Unlocks"] = "Exploration Unlocks navigation"
-    log(f"  Generated: Template:Navbox Exploration Unlocks")
-
-    # Space Station Upgrades navbox
-    content = generate_sky_platform_navbox(gd)
-    path = output_dir / "Template_Navbox_Space_Station_Upgrades.wikitext"
-    path.write_text(content, encoding="utf-8")
-    results["Template:Navbox Space Station Upgrades"] = "Space Station Upgrades navigation"
-    log(f"  Generated: Template:Navbox Space Station Upgrades")
-
-    # Research Tree page
+    # Research Tree page — main namespace, goes to pages_dir
     content = generate_research_tree_page(gd)
-    path = output_dir / "Research_Tree.wikitext"
-    path.write_text(content, encoding="utf-8")
+    (tree_dir / "Research_Tree.wikitext").write_text(content, encoding="utf-8")
     results["Research Tree"] = "Full research dependency tree"
     log(f"  Generated: Research Tree page")
 
