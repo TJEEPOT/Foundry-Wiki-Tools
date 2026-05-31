@@ -27,5 +27,5 @@ from the game installation at <code>F:\SteamLibrary\SteamApps\common\FOUNDRY</co
 * Tier is calculated as dependency depth + 1 (matching the navbox tier display): research with no prerequisites is Tier 1.
 * Total research time is computed as <code>seconds_per_science_item × minimum science pack quantity</code>, assuming a single [[Research Server (Building)|Research Server]].
 * Prerequisites link to <code>NAME (Research)</code> pages.
-* The infobox automatically adds <code>[[Category:Research]]</code> and <code>[[Category:Tier N research]]</code>.
+* The infobox automatically adds <code><nowiki>[[Category:Research]]</nowiki></code> and <code><nowiki>[[Category:Tier N research]]</nowiki></code>.
 {{doc/end}}

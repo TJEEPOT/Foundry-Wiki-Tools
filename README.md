@@ -1,6 +1,8 @@
 # Foundry Wiki Tools
 
-A Python toolkit for extracting game data from [Foundry](https://store.steampowered.com/app/983870/FOUNDRY/) (the factory-building game) and generating content for its [community wiki](https://wiki.foundry-game.com). The pipeline reads YAML template files shipped with the game, builds a cross-referenced data model, and produces Lua data modules, wikitext pages, navigation templates, and a local preview site - everything needed to keep a MediaWiki instance up to date as the game evolves.
+A Python toolkit for extracting game data from [Foundry](https://store.steampowered.com/app/983870/FOUNDRY/) (the factory-building game) and generating content for its [community wiki](https://wiki.foundry-game.com). The pipeline reads YAML template files shipped with the game, builds a cross-referenced data model, and produces Lua data modules, wikitext pages, navigation templates, and a local preview site — everything needed to keep a MediaWiki instance up to date as the game evolves.
+
+A separate standalone script, `fetch_patch.py`, fetches patch notes and DevBlogs from the Steam API and converts them to wiki-ready wikitext.
 
 ## Table of Contents
 
@@ -8,6 +10,7 @@ A Python toolkit for extracting game data from [Foundry](https://store.steampowe
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [CLI Commands](#cli-commands)
+- [fetch\_patch.py](#fetch_patchpy)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
 - [Python Package - `foundry_parser`](#python-package--foundry_parser)
@@ -23,7 +26,7 @@ A Python toolkit for extracting game data from [Foundry](https://store.steampowe
 
 ## Overview
 
-Foundry stores its game data as ~2,750 YAML files across 68+ categories in `foundry_Data/StreamingAssets/Templates/`. This toolkit:
+Foundry stores its game data as YAML files in `StreamingAssets/Entities/`. This toolkit:
 
 1. **Parses** all YAML templates into typed Python dataclasses
 2. **Cross-references** entities (which recipes produce an item, which buildings craft a recipe, which research unlocks what)
@@ -33,6 +36,7 @@ Foundry stores its game data as ~2,750 YAML files across 68+ categories in `foun
 6. **Produces a local HTML preview** so you can review pages without wiki access
 7. **Diffs generated pages** against a wiki backup to see what's new or changed
 8. **Uploads pages** to the wiki via the MediaWiki API (with dry-run safety)
+9. **Fetches patch notes and DevBlogs** from the Steam API and converts them to wikitext (`fetch_patch.py`)
 
 ---
 
@@ -52,6 +56,8 @@ pip install -e ".[wiki]"     # Also installs `requests` for wiki upload/backup
 
 The `foundry-parser` command becomes available after installation, or you can use `python -m foundry_parser`.
 
+`fetch_patch.py` is a standalone script with no extra dependencies beyond the Python standard library.
+
 ---
 
 ## Quick Start
@@ -59,7 +65,7 @@ The `foundry-parser` command becomes available after installation, or you can us
 ```bash
 # Point at your Foundry game directory
 GAME_DIR="C:/Program Files/Steam/SteamApps/common/FOUNDRY"
-F:\SteamLibrary\SteamApps\common\FOUNDRY
+
 # 1. Generate Lua data modules for the wiki
 foundry-parser generate-lua "$GAME_DIR" --output lua_modules
 
@@ -115,7 +121,7 @@ foundry-parser lookup <game_dir> research _base_research_basic_steelmaking
 
 ### `generate-lua`
 
-Export game data as Lua modules compatible with MediaWiki's Scribunto (`mw.loadData()`). Produces one `.lua` file per data category plus a NameIndex for display-name lookups.
+Export game data as Lua modules compatible with MediaWiki's Scribunto (`mw.loadData()`). Produces ~27 modules including one per data category plus cross-reference index tables.
 
 ```bash
 foundry-parser generate-lua <game_dir> [--output lua_modules]
@@ -123,7 +129,7 @@ foundry-parser generate-lua <game_dir> [--output lua_modules]
 
 ### `generate-pages`
 
-Generate complete wikitext pages for items, buildings, research, and elements. Each page includes an infobox template call, a contextual lead paragraph (not generic filler), recipe sections, tech tree context, navbox, and categories.
+Generate complete wikitext pages for items, buildings, research, elements, exploration unlocks, and sky platform upgrades. Each page includes an infobox template call, a contextual lead paragraph, recipe sections, tech tree context, navbox, and categories. Produces ~1,437 pages total.
 
 ```bash
 foundry-parser generate-pages <game_dir> [--output wiki_pages]
@@ -131,7 +137,7 @@ foundry-parser generate-pages <game_dir> [--output wiki_pages]
 
 ### `generate-navboxes`
 
-Generate navbox templates (Items, Buildings, Research, Elements) and a dedicated Research Tree page with sortable tier tables.
+Generate navbox templates (Items, Buildings, Research, Elements, Exploration Unlocks, Space Station Upgrades) and a dedicated Research Tree page.
 
 ```bash
 foundry-parser generate-navboxes <game_dir> [--output wiki_pages/navboxes]
@@ -166,12 +172,65 @@ foundry-parser diff-wiki [--pages wiki_pages] [--backup wiki_backup] [--output d
 Upload generated pages to the wiki via the MediaWiki API. Defaults to dry-run mode (no changes made). Pass `--commit` to actually upload.
 
 ```bash
-# Dry run (safe - just reports what would happen)
+# Dry run (safe — just reports what would happen)
 foundry-parser upload-wiki --pages wiki_pages --username BotUser --password BotPass
 
 # Actually upload
 foundry-parser upload-wiki --pages wiki_pages --username BotUser --password BotPass --commit
 ```
+
+### `batch-upload`
+
+Full pipeline in one command: generate Lua modules, generate pages, generate navboxes, then upload everything to the wiki.
+
+```bash
+foundry-parser batch-upload <game_dir> --username BotUser --password BotPass [--commit]
+```
+
+---
+
+## fetch_patch.py
+
+A standalone script (no extra dependencies) that fetches patch notes and Foundry Fridays DevBlogs from the Steam API and converts them to wiki-ready wikitext.
+
+> **Note:** The GID in a Steam web URL (e.g. `/view/670589610075619682`) is *different* from the API GID. Use `--list` to find the correct API GID for the post you want.
+
+### Usage
+
+```bash
+# List the 5 most recent posts with their API GIDs (default)
+python fetch_patch.py --list
+
+# List more posts
+python fetch_patch.py --list --count 20
+
+# Fetch a specific post by API GID
+python fetch_patch.py 1805065414331275
+
+# Override the inferred wiki page name
+python fetch_patch.py 1805065414331275 --page-name "Update 2.1 (Early Access)"
+```
+
+### Options
+
+| Option | Default | Description |
+|--------|---------|-------------|
+| `--list` | — | Show recent posts with their API GIDs, then exit |
+| `--count N` | `5` | Number of posts to show with `--list` |
+| `--page-name NAME` | inferred | Wiki page name (inferred from post title if omitted) |
+| `--stage STAGE` | `e` | Release stage: `e` Early Access, `a` Alpha, `b` Beta, `r` Release |
+| `--channel CHANNEL` | `st` | Channel: `st` Stable, `ex` Experimental, `m` Major |
+| `--out-dir DIR` | `wiki_pages/patches/` | Output directory for wikitext and images |
+| `--dry-run` | — | Print wikitext to stdout instead of writing a file |
+| `--no-images` | — | Skip downloading images (placeholders remain in the wikitext) |
+
+### What it does
+
+- Fetches the post's BBcode content from the Steam API and converts it to MediaWiki wikitext (headings, lists, bold/italic, links, image embeds, YouTube links)
+- Infers the wiki page name from the post title (e.g. "Update 2.1 is Live Now!" → "Update 2.1 (Early Access)")
+- Detects Foundry Fridays DevBlogs automatically and uses the appropriate template (`{{Devblog}}` vs `{{Patch}}`)
+- Downloads images and saves them with wiki-ready filenames (e.g. `Update 2.1 (Early Access) 01.jpg`)
+- Leaves Discord and Reddit links as `<!-- TODO -->` comments for manual entry
 
 ---
 
@@ -185,7 +244,7 @@ The system uses a three-layer architecture on the wiki side:
 │  Thin wrappers - just {{#invoke:Module|func}}   │
 ├─────────────────────────────────────────────────┤
 │  Layer 2: Lua Rendering Modules (hand-written)  │
-│  Infobox, RecipeTable, ItemLink                 │
+│  Infobox, RecipeCard, RecipeTable, ItemLink     │
 ├─────────────────────────────────────────────────┤
 │  Layer 1: Lua Data Modules (auto-generated)     │
 │  Module:Data/Items, Module:Data/Buildings, etc. │
@@ -211,37 +270,75 @@ YAML game files -> Parser -> GameData (cross-referenced) -> Generators
 
 ```
 Foundry-Wiki-Tools/
-├── foundry_parser/          # Python package (core toolkit)
+├── foundry_parser/              # Python package (core toolkit)
 │   ├── __init__.py
-│   ├── __main__.py          # Enables `python -m foundry_parser`
-│   ├── cli.py               # CLI entry point (argparse, all commands)
-│   ├── models.py            # Dataclass definitions for all entity types
-│   ├── loader.py            # YAML loading and batch parsing
-│   ├── game_data.py         # GameData class with cross-reference indices
-│   ├── lua_export.py        # Lua data module generator
-│   ├── page_generator.py    # Wiki page wikitext generator
-│   ├── navbox_generator.py  # Navigation template generator
-│   ├── preview.py           # Static HTML preview site generator
-│   ├── wiki_backup.py       # MediaWiki API backup tool
-│   ├── wiki_diff.py         # Diff tool (generated vs. backup)
-│   └── wiki_upload.py       # MediaWiki API upload tool
+│   ├── __main__.py              # Enables `python -m foundry_parser`
+│   ├── cli.py                   # CLI entry point (argparse, all commands)
+│   ├── models.py                # Dataclass definitions for all entity types
+│   ├── loader.py                # YAML loading and batch parsing
+│   ├── game_data.py             # GameData class with cross-reference indices
+│   ├── lua_export.py            # Lua data module generator
+│   ├── page_generator.py        # Wiki page wikitext generator
+│   ├── page_generator_standalone.py  # Standalone page generator variant
+│   ├── navbox_generator.py      # Navigation template generator
+│   ├── preview.py               # Static HTML preview site generator
+│   ├── wiki_backup.py           # MediaWiki API backup tool
+│   ├── wiki_diff.py             # Diff tool (generated vs. backup)
+│   └── wiki_upload.py           # MediaWiki API upload tool
 │
-├── wiki_modules/            # Lua modules and templates for the wiki
+├── wiki_modules/                # Lua modules, templates, and CSS for the wiki
+│   │
+│   ├── # --- Lua rendering modules ---
 │   ├── Module_Infobox.lua           # Renders infoboxes for all entity types
-│   ├── Module_ItemLink.lua          # Inline icon+name links
+│   ├── Module_RecipeCard.lua        # Recipe cards with per-building rate breakdowns
 │   ├── Module_RecipeTable.lua       # Recipe tables with rates and crafters
-│   ├── TemplateStyles_Infobox.css   # Dark-theme CSS for infoboxes
-│   ├── Template_Infobox.wikitext            # Auto-detecting infobox wrapper
-│   ├── Template_Infobox_Item.wikitext       # Item-specific infobox
-│   ├── Template_Infobox_Building.wikitext   # Building-specific infobox
-│   ├── Template_Infobox_Research.wikitext   # Research-specific infobox
-│   ├── Template_Infobox_Element.wikitext    # Element-specific infobox
-│   ├── Template_ItemLink.wikitext           # Inline link wrapper
-│   ├── Template_RecipeTable.wikitext        # Recipe table (by item)
-│   └── Template_RecipeTable_Building.wikitext  # Recipe table (by building)
+│   ├── Module_ItemLink.lua          # Inline icon+name links
+│   ├── Module_Achievements.lua      # Achievements page renderer
+│   ├── Module_Data_Buildings.lua    # Static building data (crafting time modifiers, etc.)
+│   │
+│   ├── # --- /doc subpages (uploaded as Module:Name/doc) ---
+│   ├── Module_Infobox_doc.wikitext
+│   ├── Module_RecipeCard_doc.wikitext
+│   ├── Module_RecipeTable_doc.wikitext
+│   ├── Module_ItemLink_doc.wikitext
+│   ├── Module_Achievements_doc.wikitext
+│   ├── Module_Data_Buildings_doc.wikitext
+│   │
+│   ├── # --- CSS (uploaded as Template:Name/styles.css) ---
+│   ├── Template_Infobox_styles.css      # Infobox, item links, research card styles
+│   ├── Template_RecipeCard_styles.css   # Recipe card layout (Design B)
+│   ├── Template_Navbox2_style.css       # Navbox and hlist styles
+│   │
+│   ├── # --- Template wrappers ---
+│   ├── Template_Infobox.wikitext
+│   ├── Template_Infobox_Building.wikitext
+│   ├── Template_Infobox_Element.wikitext
+│   ├── Template_Infobox_Exploration_Unlock.wikitext
+│   ├── Template_Infobox_Item.wikitext
+│   ├── Template_Infobox_Research.wikitext
+│   ├── Template_Infobox_Sky_Platform_Upgrade.wikitext
+│   ├── Template_ItemLink.wikitext
+│   ├── Template_RecipeCard.wikitext
+│   ├── Template_RecipeCard_Building.wikitext
+│   ├── Template_RecipeCard_Recipe.wikitext
+│   ├── Template_RecipeTable.wikitext
+│   ├── Template_RecipeTable_Building.wikitext
+│   ├── Template_RecipeTable_Recipe.wikitext
+│   ├── Template_Research_Card.wikitext
+│   ├── Template_Navbox2.wikitext
+│   ├── Template_Navbox_Buildings.wikitext
+│   ├── Template_Navbox_Research.wikitext
+│   ├── Template_Devblog.wikitext
+│   └── Template_DevblogsNav.wikitext
+│   │
+│   └── # (plus matching _doc.wikitext files for each template above)
 │
+├── fetch_patch.py           # Standalone: fetch Steam patch notes → wikitext
+├── rename_icons.py          # Utility: batch-rename icon files to wiki conventions
 ├── pyproject.toml           # Project metadata and dependencies
-├── test_lua_modules.lua     # Lua test script for verifying modules locally
+│
+├── patch_notes/             # Patch note data
+│   └── patches.xlsx
 │
 ├── lua_modules/             # (generated) Lua data files for wiki upload
 ├── wiki_pages/              # (generated) Wikitext page files
@@ -259,188 +356,171 @@ Foundry-Wiki-Tools/
 
 Defines typed dataclasses for every entity the parser handles:
 
-- **`Item`** - name, identifier, stack size, weight, icon, category, trade prices, flags
-- **`Building`** - type, size (x/y/z), power consumption, power type/subtype, recipe tags, modules, name override
-- **`CraftingRecipe`** - inputs, outputs (both items and elements/fluids), time, tags, category
-- **`Research`** - name, description, costs, dependencies, crafting unlocks, seconds per science item
-- **`Element`** - name, pipe content type (gas/liquid), properties
-- **`ItemCategory`**, **`RecipeCategory`**, **`CraftingTag`** - supporting lookup tables
-- **`TerrainBlock`**, **`OreVein`**, **`Quest`**, **`SkyPlatformUpgrade`**, etc. - additional categories
+- **`Item`** — name, identifier, stack size, weight, icon, category, trade prices, flags
+- **`Building`** — type, size (x/y/z), power consumption, power type/subtype, recipe tags, modules, name override
+- **`CraftingRecipe`** — inputs, outputs (both items and elements/fluids), time, tags, category
+- **`Research`** — name, description, costs, dependencies, crafting unlocks, seconds per science item
+- **`Element`** — name, pipe content type (gas/liquid), properties
+- **`ExplorationUnlock`** — title, category, prerequisites, crafting recipe unlocks
+- **`SkyPlatformUpgrade`** — name, cost, effects, prerequisites
+- **`ItemCategory`**, **`RecipeCategory`**, **`CraftingTag`** — supporting lookup tables
+- **`TerrainBlock`**, **`OreVein`**, **`Quest`** — additional categories
 
 Helper types: `CraftingIO` (amount + identifier for recipe inputs/outputs).
 
 ### `loader.py`
 
-Low-level YAML loading. Reads the `StreamingAssets/Templates/` directory structure, identifies category directories, and parses YAML files into raw dictionaries. Handles Unity-specific quirks (embedded references, `_str` suffix fields).
+Low-level YAML loading. Reads the `StreamingAssets/Entities/` directory structure, identifies entity categories, and parses YAML files into raw dictionaries.
 
 ### `game_data.py`
 
 The central `GameData` class. Constructed via `GameData.from_game_dir(path)`, it:
 
-- Loads all template categories via `loader.py`
+- Loads all entity categories via `loader.py`
 - Instantiates model objects from raw YAML
 - Builds cross-reference indices:
-  - `_recipe_output_index` - item identifier -> recipes that produce it
-  - `_recipe_input_index` - item identifier -> recipes that consume it
-  - `_building_to_item_index` - building identifier -> item that places it
-  - `_building_recipe_index` - building identifier -> recipes it can craft (via tag matching)
-  - `_research_unlock_index` - recipe/item identifier -> research that unlocks it
-
-Key lookup methods:
-
-- `recipes_producing(item_id)` -> list of recipes
-- `recipes_consuming(item_id)` -> list of recipes
-- `building_for_item(item_id)` -> Building or None
-- `recipes_for_building(building_id)` -> list of recipes
-- `research_unlocking(item_id)` -> list of Research
-- `item_name(item_id)` / `building_name(building_id)` / `element_name(elem_id)` -> display name
-- `summary()` -> dict of category counts
-- `export_json(path)` -> full JSON export
+  - `_recipe_output_index` — item identifier → recipes that produce it
+  - `_recipe_input_index` — item identifier → recipes that consume it
+  - `_building_to_item_index` — building identifier → item that places it
+  - `_building_recipe_index` — building identifier → recipes it can craft (via tag matching)
+  - `_research_unlock_index` — recipe/item identifier → research that unlocks it
 
 ### `lua_export.py`
 
-Converts GameData into Lua source files compatible with `mw.loadData()`. Each module is a Lua table keyed by entity identifier. Produces ~24 modules including:
+Converts `GameData` into Lua source files compatible with `mw.loadData()`. Each module is a Lua table keyed by entity identifier. Produces ~27 modules including:
 
 - `Items.lua`, `Buildings.lua`, `Recipes.lua`, `Research.lua`, `Elements.lua`
+- `ExplorationUnlocks.lua`, `SkyPlatformUpgrades.lua`
 - `ItemCategories.lua`, `RecipeCategories.lua`, `CraftingTags.lua`
-- `TerrainBlocks.lua`, `OreVeins.lua`, `Quests.lua`, `SkyPlatformUpgrades.lua`
-- `BuildingRecipeIndex.lua` - maps building ID -> list of recipe IDs it can craft
-- `ItemBuildingIndex.lua` - maps building ID -> item ID that places it
-- `NameIndex.lua` - maps display names -> `{type, id}` for resolving page names to data keys
+- `TerrainBlocks.lua`, `OreVeins.lua`, `Quests.lua`, `Achievements.lua`
+- `BuildingRecipeIndex.lua`, `ItemBuildingIndex.lua`, `NameIndex.lua`
+- `RecipeIndex.lua`, `ResearchIndex.lua`, `UpgradePaths.lua`
 
 ### `page_generator.py`
 
-Generates complete wikitext for every entity that merits a wiki page (~962 pages total):
+Generates complete wikitext for every entity that merits a wiki page (~1,437 pages total across six page types):
 
-- ~512 item pages
-- ~249 building pages (deduplicated by display name)
-- ~173 research pages
-- ~28 element pages
+- **Item pages** — infobox, obtaining recipes, usage recipes, research unlock, navbox
+- **Building pages** — infobox, construction recipe, usage recipes, research unlock, upgrade path, navbox
+- **Research pages** — infobox, unlock list (recipe cards + non-recipe bullets), leads-to section, tech tree breadcrumb, navbox
+- **Element pages** — infobox, produced-by and used-in recipe sections, transport info, navbox
+- **Exploration Unlock pages** — infobox, description, prerequisite chain
+- **Sky Platform Upgrade pages** — infobox, description, prerequisites
 
-Each page includes:
-- Infobox template call with the entity's identifier
-- **Contextual lead paragraph** - not generic filler but sentences like "Steel Beams can be produced by 2 recipes, crafted in buildings such as Advanced Smelter. It is a component in 75 recipes. Unlocked by the Basic Steelmaking research."
-- Recipe/crafting sections
-- Tech tree context (what research unlocks it, what it enables)
-- Navbox template
-- Wiki categories
-
-Filtering logic skips entities that don't warrant pages (internal items without recipes, unnamed entities, terrain blocks, etc.).
+Each page includes a contextual lead paragraph (not generic filler) and handles disambiguation when multiple entities share a display name.
 
 ### `navbox_generator.py`
 
-Generates five navigation files:
+Generates navigation templates and supporting pages:
 
-- **Template:Navbox Items** - items grouped by category (Resources, Components, Products, etc.)
-- **Template:Navbox Buildings** - buildings grouped by function (Production, Power Generation, Logistics, Storage, etc.) using a 16-group mapping from building types
-- **Template:Navbox Research** - research grouped by dependency tier (computed via recursive BFS)
-- **Template:Navbox Elements** - elements grouped by state (Gases, Liquids)
-- **Research Tree** - a dedicated page with sortable wikitables per tier showing unlocks, prerequisites, and costs
-
-Uses the `{{Navbox2}}` format compatible with the existing wiki.
+- **Navbox Items** — items grouped by category
+- **Navbox Buildings** — 16 functional groups (Production, Power Generation, Logistics, etc.)
+- **Navbox Research** — grouped by dependency tier (computed recursively)
+- **Navbox Elements** — grouped by state (Gases, Liquids)
+- **Navbox Exploration Unlocks** — exploration unlock categories
+- **Navbox Space Station Upgrades** — upgrade categories
+- **Research Tree** — sortable wikitables per tier showing unlocks, prerequisites, and costs
 
 ### `preview.py`
 
-Generates a static HTML site from wikitext pages for local browsing without wiki access:
-
-- Dark theme matching the wiki's aesthetic
-- Cross-page links (blue for existing pages, red for missing)
-- Template placeholders rendered as styled blocks (infobox sidebar, recipe card, navbox bar)
-- Handles wikitext syntax: headings, bold/italic, internal links, bullet lists, wiki tables, categories
-- Index pages: main index + per-type indexes (items, buildings, research, elements, navboxes)
-- Open `preview/index.html` in any browser to browse
+Generates a static HTML site from wikitext pages for local browsing without wiki access. Dark-themed, with cross-page links, template placeholder rendering, and per-type index pages.
 
 ### `wiki_backup.py`
 
-Downloads all pages from a MediaWiki site via the API for local reference:
-
-- Uses `action=query&list=allpages` to enumerate all pages across namespaces
-- Downloads page content via the revisions API
-- Organises output by namespace (main/, Template/, Module/, etc.)
-- Configurable rate limiting (default 0.5s between requests)
+Downloads all pages from a MediaWiki site via the API for local reference.
 
 ### `wiki_diff.py`
 
-Compares generated pages against a wiki backup:
-
-- Categorises pages as new, changed, unchanged, or removed
-- Produces unified diffs for changed pages
-- Outputs: `summary.txt`, `report.json`, `new_pages.txt`, `changed_pages.txt`, `removed_pages.txt`, and individual `.diff` files
-- Normalises whitespace for fair comparison
-- "Removed" pages are those in the backup but not generated (hand-written content, redirects, etc.)
+Compares generated pages against a wiki backup. Produces a report of new, changed, unchanged, and removed pages plus unified diffs.
 
 ### `wiki_upload.py`
 
-Handles authenticated page uploads to a MediaWiki site:
-
-- **Login flow**: login token -> authenticate -> CSRF token for editing
-- **Dry-run mode** (default): reports what would change without touching the wiki
-- **Incremental mode**: fetches current page content and skips unchanged pages
-- **Bot flag**: marks edits as bot edits (hidden from recent changes by default)
-- **Rate limiting**: configurable delay between edits (default 1s)
-- **Lua module upload**: dedicated method for `Module:Data/*` namespace
-- Edit summary: "Auto-generated by Foundry Wiki Tools"
+Handles authenticated page uploads to a MediaWiki site. Supports dry-run mode, incremental updates (skips unchanged pages), bot flag, configurable rate limiting, and automatic CSRF token refresh.
 
 ---
 
 ## Wiki Modules - `wiki_modules/`
 
-These files are designed to be uploaded to the wiki and used by the generated pages. They form the rendering layer that transforms raw data into formatted HTML.
+These files are uploaded to the wiki and form the rendering layer. All templates use `<noinclude>{{doc}}</noinclude>` to load their `/doc` subpage, and all doc pages are wrapped in `{{doc/start}}` / `{{doc/end}}`.
 
-### `Module_Infobox.lua`
+### Lua Rendering Modules
+
+#### `Module_Infobox.lua`
 
 The main infobox renderer. Entry points:
 
-- `p.item(frame)` - item infobox (icon, stack size, weight, category, trade prices)
-- `p.building(frame)` - building infobox (type, size, power, recipe tags)
-- `p.research(frame)` - research infobox (costs, prerequisites, unlocks)
-- `p.element(frame)` - element infobox (state, pipe type)
-- `p.auto(frame)` - auto-detects entity type from NameIndex and dispatches
+- `p.item(frame)` — item infobox (icon, stack size, weight, category, trade prices)
+- `p.building(frame)` — building infobox (type, size, power, recipe tags, upgrade path, walkway connection)
+- `p.research(frame)` — research infobox (tier, costs, prerequisites, total time)
+- `p.element(frame)` — element infobox (state, pipe colour)
+- `p.exploration_unlock(frame)` — exploration unlock infobox
+- `p.sky_platform(frame)` — Space Station upgrade infobox
+- `p.research_card(frame)` — compact inline research summary card
 
-Resolves entity identifiers via NameIndex (so `{{Infobox}}` on a page named "Steel Beams" will find the correct data). Handles power grid display (Low Voltage/PCM vs High Voltage), auto-categorization, and image resolution via ItemBuildingIndex.
+Styles loaded from `Template:Infobox/styles.css`.
 
-### `Module_ItemLink.lua`
+#### `Module_RecipeCard.lua`
 
-Renders inline icon+name links like `[[File:steel_beams.png|16px|link=Steel Beams]] [[Steel Beams]]`. Supports:
+Renders visual recipe cards showing inputs → outputs, base craft time, and per-building throughput rates. Entry points:
 
-- Lookup by identifier (`_base_xf_steel_beams`) or display name (`Steel Beams`)
-- Options: `size` (icon px), `noicon`, `notext`, `nolink`, `amount` (prefix like "5x")
-- Lazy-loads data modules to avoid circular dependencies
-- Exposes `p._resolveEntity(input)` for other modules to reuse
+- `p.main(frame)` — cards for all recipes producing or consuming a given item/element
+- `p.building(frame)` — cards for all recipes a specific building can craft
+- `p.recipe(frame)` — single card for a specific recipe by identifier
 
-### `Module_RecipeTable.lua`
+Styles loaded from `Template:RecipeCard/styles.css`.
 
-Renders recipe information in two formats:
+#### `Module_RecipeTable.lua`
 
-- **Recipe table**: wikitable showing inputs -> outputs with amounts, base crafting time, which buildings can craft it, and what research unlocks it
-- **Rate table**: per-crafter comparison showing items/minute at different building speeds
+Renders recipe information as sortable wikitables. Entry points:
 
-Entry points:
+- `p.main(frame)` — table for all recipes producing or consuming an item/element
+- `p.building(frame)` — table for all recipes a given building can craft
+- `p.recipe(frame)` — single-row table for a specific recipe
 
-- `p.forItem(frame)` - all recipes that produce or consume a given item
-- `p.forBuilding(frame)` - all recipes a given building can craft
-- `p.single(frame)` - a specific recipe by identifier
+#### `Module_ItemLink.lua`
 
-Handles both solid item I/O and fluid/elemental I/O (displayed in litres).
+Renders inline icon+name links. Supports lookup by identifier or display name, optional icon size, `noicon`, `notext`, `nolink`, and quantity prefix.
 
-### `TemplateStyles_Infobox.css`
+#### `Module_Achievements.lua`
 
-Dark-theme CSS loaded via `<templatestyles>`. Styles the infobox, item links, recipe tables, and rate tables. Uses the wiki's existing dark colour palette.
+Renders the Achievements page, grouping achievements by category with images and descriptions.
 
-### Template Wrappers (`.wikitext` files)
+#### `Module_Data_Buildings.lua`
 
-Thin wrappers that page authors use. Each is just a `<includeonly>{{#invoke:...}}</includeonly>` call:
+Static Lua data table (578 entries) containing building metadata not available from the auto-generated data modules: crafting time modifiers, power core slots, workstation effect tags, etc. **Do not edit directly** — regenerate via `foundry-parser generate-lua`.
+
+### CSS Files
+
+| Local file | Wiki title | Used by |
+|---|---|---|
+| `Template_Infobox_styles.css` | `Template:Infobox/styles.css` | `Module:Infobox` |
+| `Template_RecipeCard_styles.css` | `Template:RecipeCard/styles.css` | `Module:RecipeCard` |
+| `Template_Navbox2_style.css` | `Template:Navbox2/style.css` | `Template:Navbox2` |
+
+### Template Wrappers
 
 | Template | Invokes | Purpose |
 |----------|---------|---------|
-| `{{Infobox}}` | `Module:Infobox\|auto` | Auto-detecting infobox |
-| `{{Infobox Item}}` | `Module:Infobox\|item` | Item-specific |
-| `{{Infobox Building}}` | `Module:Infobox\|building` | Building-specific |
-| `{{Infobox Research}}` | `Module:Infobox\|research` | Research-specific |
-| `{{Infobox Element}}` | `Module:Infobox\|element` | Element-specific |
-| `{{RecipeTable}}` | `Module:RecipeTable\|forItem` | Recipes for an item |
-| `{{RecipeTable Building}}` | `Module:RecipeTable\|forBuilding` | Recipes for a building |
+| `{{Infobox}}` | `Module:Infobox` | Generic dispatcher (routes by `type=` parameter) |
+| `{{Infobox Item}}` | `Module:Infobox\|item` | Item infobox |
+| `{{Infobox Building}}` | `Module:Infobox\|building` | Building infobox |
+| `{{Infobox Research}}` | `Module:Infobox\|research` | Research infobox |
+| `{{Infobox Element}}` | `Module:Infobox\|element` | Element infobox |
+| `{{Infobox Exploration Unlock}}` | `Module:Infobox\|exploration_unlock` | Exploration unlock infobox |
+| `{{Infobox Sky Platform Upgrade}}` | `Module:Infobox\|sky_platform` | Space Station upgrade infobox |
+| `{{Research Card}}` | `Module:Infobox\|research_card` | Compact inline research summary |
+| `{{RecipeCard}}` | `Module:RecipeCard\|main` | Recipe cards for an item/element |
+| `{{RecipeCard Building}}` | `Module:RecipeCard\|building` | Recipe cards for a building |
+| `{{RecipeCard Recipe}}` | `Module:RecipeCard\|recipe` | Single recipe card by identifier |
+| `{{RecipeTable}}` | `Module:RecipeTable\|main` | Recipe table for an item/element |
+| `{{RecipeTable Building}}` | `Module:RecipeTable\|building` | Recipe table for a building |
+| `{{RecipeTable Recipe}}` | `Module:RecipeTable\|recipe` | Single-row recipe table |
 | `{{ItemLink}}` | `Module:ItemLink\|main` | Inline icon+name link |
+| `{{Navbox2}}` | `Module:Navbox` | Base navbox wrapper (used by all navboxes) |
+| `{{Navbox Buildings}}` | via `{{Navbox2}}` | Buildings navigation box |
+| `{{Navbox Research}}` | via `{{Navbox2}}` | Research navigation box |
+| `{{Devblog}}` | — | Standard header for Foundry Fridays DevBlog pages |
+| `{{DevblogsNav}}` | — | Navigation box for DevBlog pages |
 
 ---
 
@@ -450,9 +530,9 @@ These directories are created by running the CLI commands and are not checked in
 
 | Directory | Created by | Contents |
 |-----------|-----------|----------|
-| `lua_modules/` | `generate-lua` | ~24 `.lua` files for wiki upload to `Module:Data/*` |
-| `wiki_pages/` | `generate-pages` | ~962 `.wikitext` files (one per entity page) |
-| `wiki_pages/navboxes/` | `generate-navboxes` | 4 navbox templates + Research Tree page |
+| `lua_modules/` | `generate-lua` | ~27 `.lua` files for wiki upload to `Module:Data/*` |
+| `wiki_pages/` | `generate-pages` | ~1,437 `.wikitext` files (one per entity page) |
+| `wiki_pages/navboxes/` | `generate-navboxes` | Navbox templates and Research Tree page |
 | `wiki_backup/` | `backup-wiki` | Downloaded wiki pages organised by namespace |
 | `diff_report/` | `diff-wiki` | Diff analysis (summary, JSON report, individual diffs) |
 | `preview/` | `preview` | Static HTML site (open `index.html` in browser) |
@@ -461,26 +541,28 @@ These directories are created by running the CLI commands and are not checked in
 
 ## Wiki Data Architecture
 
-The wiki uses MediaWiki v1.43.1 with Scribunto (Lua) and ParserFunctions. It does **not** have Cargo or Semantic MediaWiki.
+The wiki uses MediaWiki v1.43.1 with Scribunto (Lua 5.1) and ParserFunctions. It does **not** have Cargo or Semantic MediaWiki.
 
 ### Data flow on the wiki
 
 ```
-Module:Data/Items (mw.loadData)  ->  Module:Infobox  ->  {{Infobox Item}}
-Module:Data/Buildings             ->  Module:RecipeTable  ->  {{RecipeTable}}
-Module:Data/Recipes               ->  Module:ItemLink  ->  {{ItemLink}}
-Module:Data/NameIndex             ->  (name resolution)
-Module:Data/BuildingRecipeIndex   ->  (crafter lookup)
-Module:Data/ItemBuildingIndex     ->  (building-item mapping)
+Module:Data/Items (mw.loadData)   ->  Module:Infobox     ->  {{Infobox Item}}
+Module:Data/Buildings              ->  Module:RecipeCard  ->  {{RecipeCard}}
+Module:Data/Recipes                ->  Module:RecipeTable ->  {{RecipeTable}}
+Module:Data/Research               ->  Module:ItemLink    ->  {{ItemLink}}
+Module:Data/NameIndex              ->  (name resolution)
+Module:Data/BuildingRecipeIndex    ->  (crafter lookup)
+Module:Data/ItemBuildingIndex      ->  (building-item mapping)
 ```
 
 ### Key design decisions
 
-- **`mw.loadData()`** is used for all data modules - it returns read-only tables that are shared across all `#invoke` calls on a page, saving memory.
-- **NameIndex** maps display names to `{type, id}` pairs so that templates on a page named "Steel Beams" can find the data keyed by `_base_xf_steel_beams`.
-- **No recipe pages** - recipes are embedded in item and building pages rather than having their own pages.
-- **Building names** are resolved from `name_override` (if set) or by looking up the item that places the building via ItemBuildingIndex.
-- **Power system** has two voltage levels: Low Voltage (power_type = "PCM", uses building blocks for distribution) and High Voltage (power_type = "NONE", uses power lines).
+- **`mw.loadData()`** is used for all data modules — it returns read-only tables shared across all `#invoke` calls on a page, saving memory. Because of this, `pairs()` does not work on data module tables; use direct key lookups only.
+- **NameIndex** maps display names to `{type, id}` pairs so that templates can find the data keyed by `_base_xf_steel_beams` from a page named "Steel Beams".
+- **No recipe pages** — recipes are embedded in item and building pages rather than having their own pages.
+- **Building names** are resolved from `name_override` (if set) or by looking up the item that places the building via `ItemBuildingIndex`.
+- **Power system** has two voltage levels: Low Voltage (PCM, distributed via building blocks) and High Voltage (uses power lines).
+- **`mw.loadData()` proxy limitation** — data module tables are read-only proxies; `pairs()` and `ipairs()` do not work on them.
 
 ---
 
@@ -512,6 +594,18 @@ cat diff_report/summary.txt
 foundry-parser upload-wiki --pages wiki_pages --username Bot --password Pass --commit
 ```
 
+For patch notes, run `fetch_patch.py` separately after each update:
+
+```bash
+# See what's new
+python fetch_patch.py --list
+
+# Fetch the patch note
+python fetch_patch.py <API_GID>
+
+# Review the generated file, then upload via the wiki UI or upload-wiki
+```
+
 ---
 
 ## Configuration and Conventions
@@ -522,28 +616,27 @@ The toolkit expects the standard Steam installation layout:
 
 ```
 FOUNDRY/
-└── foundry_Data/
-    └── StreamingAssets/
-        └── Templates/
-            ├── Items/
-            ├── Buildings/
-            ├── CraftingRecipes/
-            ├── Research/
-            ├── Elements/
-            └── ... (68+ category directories)
+└── StreamingAssets/
+    └── Entities/
+        ├── BuildableObjectTemplate/
+        ├── ItemTemplate/
+        ├── CraftingRecipeTemplate/
+        ├── ResearchTemplate/
+        ├── ElementTemplate/
+        └── ... (many more entity categories)
 ```
 
 ### Entity identifiers
 
-All entities have a unique string identifier (e.g., `_base_xf_steel_beams`, `_base_advanced_smelter`). These are used as keys in Lua data modules and as lookup parameters in templates.
+All entities have a unique string identifier (e.g. `_base_xf_steel_beams`, `_base_advanced_smelter`). These are used as keys in Lua data modules and as lookup parameters in templates.
 
 ### Page naming
 
-Wiki pages use the entity's display name (e.g., "Steel Beams", "Advanced Smelter"). The NameIndex module bridges display names back to identifiers for data lookup.
+Wiki pages use the entity's display name (e.g. "Steel Beams", "Advanced Smelter"). The `NameIndex` module bridges display names back to identifiers for data lookup. Disambiguation suffixes (e.g. `(Research)`, `(1)`, `(2)`) are added automatically when multiple entities share a name.
 
 ### Icon convention
 
-Item icons on the wiki follow the pattern `{icon_field_value}.png` (e.g., `steel_beams.png`). The `icon` field from the Items data provides this filename.
+Item icons on the wiki follow the naming convention `Item_<Page Name>.<ext>` (e.g. `Item_Steel_Beams.png`). The `rename_icons.py` utility handles batch renaming of exported icons to this format.
 
 ### Building type classification
 
@@ -555,14 +648,12 @@ Buildings are classified by their `type` field into functional groups for navbox
 
 **Core** (always required):
 - Python 3.10+
-- `pyyaml` - YAML parsing
+- `pyyaml` — YAML parsing
 
 **Wiki features** (optional, install with `pip install -e ".[wiki]"`):
-- `requests` - wiki backup and upload via MediaWiki API
+- `requests` — wiki backup and upload via MediaWiki API
 
-**Development** (optional, install with `pip install -e ".[dev]"`):
-- `pytest` - testing
-- `requests`
+**`fetch_patch.py`**: no additional dependencies (uses Python standard library only).
 
 ---
 

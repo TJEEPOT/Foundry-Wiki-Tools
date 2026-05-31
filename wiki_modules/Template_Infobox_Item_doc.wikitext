@@ -27,5 +27,5 @@ from the game installation at <code>F:\SteamLibrary\SteamApps\common\FOUNDRY</co
 * The <code>image</code> parameter should be the bare filename without the <code>Item_</code> prefix — the prefix is added automatically.
 * Trade prices are shown in [[Firmarlite Bar (Item)|Firmarlite Bars]] only when the item's <code>can_be_traded</code> flag is set.
 * Items with a <code>buildable_object_id</code> link to the corresponding building page using the <code>Name (Building)</code> title form.
-* The infobox adds the item to <code>[[Category:Items]]</code> plus its trade and creative mode categories automatically.
+* The infobox adds the item to <code><nowiki>[[Category:Items]]</nowiki></code> plus its trade and creative mode categories automatically.
 {{doc/end}}

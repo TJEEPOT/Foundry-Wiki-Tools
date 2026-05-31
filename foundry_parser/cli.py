@@ -615,17 +615,15 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
         uploader.login()
         print("Login successful.\n")
 
-    all_results = []
-    skipped = 0
+    all_results: list[str] = []
 
     def _upload_one(title: str, content: str, summary: str = "", idx: str = "",
                     content_model: str = "") -> str:
         """Upload a single page with skip-unchanged logic. Returns status string."""
-        nonlocal skipped
         if args.skip_unchanged:
             current = uploader.get_page_content(title)
             if current is not None and current.rstrip() == content.rstrip():
-                skipped += 1
+                all_results.append("unchanged")
                 print(f"  {idx}unchanged: {title}")
                 return "unchanged"
         resp = uploader.edit_page(title, content, summary=summary,
@@ -633,17 +631,31 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
         edit_data = resp.get("edit", {})
         if edit_data.get("result") == "Success":
             status = "created" if edit_data.get("new") else "updated"
+            all_results.append(status)
             print(f"  {idx}{status}: {title}")
             return status
         else:
+            all_results.append("error")
             print(f"  {idx}ERROR: {title} — {resp.get('error', edit_data)}")
             return "error"
+
+    # If --images is supplied, skip all content phases and only upload images.
+    if args.images:
+        _run_phases = False
+    else:
+        _run_phases = True
+
+    # --- Phases 1–5: Content upload (skipped when --images is supplied) ---
+    if not _run_phases:
+        print("\n  Skipping content phases — running in images-only mode (--images supplied).")
 
     # --- Phase 1: Lua data modules (Module:Data/*) ---
     print("\n" + "-" * 40)
     print("Phase 1: Lua Data Modules")
     print("-" * 40)
-    if lua_dir.exists():
+    if not _run_phases:
+        print("  Skipped — images-only mode")
+    elif lua_dir.exists():
         lua_files = sorted(lua_dir.glob("*.lua"))
         print(f"  Found {len(lua_files)} Lua data modules")
         for i, f in enumerate(lua_files, 1):
@@ -660,7 +672,9 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     print("\n" + "-" * 40)
     print("Phase 2: Wiki Rendering Modules")
     print("-" * 40)
-    if wiki_modules_dir.exists():
+    if not _run_phases:
+        print("  Skipped — images-only mode")
+    elif wiki_modules_dir.exists():
         lua_modules = sorted(wiki_modules_dir.glob("Module_*.lua"))
         # Template_Infobox_styles.css  -> Template:Infobox/styles.css
         # Template_Navbox2_style.css   -> Template:Navbox2/style.css
@@ -694,10 +708,12 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
                 _upload_one(title, content, summary="Update module documentation", idx=f"[{i}] ")
 
         for i, f in enumerate(css_files, 1):
-            # Template_Infobox_styles.css -> Template:Infobox/styles.css
-            # Template_Navbox2_style.css  -> Template:Navbox2/style.css
-            stem = f.stem.replace("Template_", "", 1)   # e.g. "Infobox_styles" or "Navbox2_style"
-            name, suffix = stem.rsplit("_", 1)           # ("Infobox", "styles") or ("Navbox2", "style")
+            # Template_Infobox_styles.css        -> Template:Infobox/styles.css
+            # Template_Navbox2_style.css         -> Template:Navbox2/style.css
+            # Template_Navbox_Patches_styles.css -> Template:Navbox Patches/styles.css
+            stem = f.stem.replace("Template_", "", 1)      # e.g. "Navbox_Patches_styles"
+            name, suffix = stem.rsplit("_", 1)              # ("Navbox_Patches", "styles")
+            name = name.replace("_", " ")                   # "Navbox Patches"
             title = f"Template:{name}/{suffix}.css"
             content = f.read_text(encoding="utf-8")
             if dry_run:
@@ -712,7 +728,9 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     print("\n" + "-" * 40)
     print("Phase 3: Template Wrappers")
     print("-" * 40)
-    if wiki_modules_dir.exists():
+    if not _run_phases:
+        print("  Skipped — images-only mode")
+    elif wiki_modules_dir.exists():
         template_files = sorted(wiki_modules_dir.glob("Template_*.wikitext"))
         doc_count = sum(1 for f in template_files if f.stem.endswith("_doc"))
         print(f"  Found {len(template_files) - doc_count} templates, {doc_count} template doc pages")
@@ -739,7 +757,9 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     print("\n" + "-" * 40)
     print("Phase 4: Navbox Templates")
     print("-" * 40)
-    if navboxes_dir.exists():
+    if not _run_phases:
+        print("  Skipped — images-only mode")
+    elif navboxes_dir.exists():
         navbox_files = sorted(navboxes_dir.glob("*.wikitext"))
         print(f"  Found {len(navbox_files)} navbox files")
 
@@ -763,7 +783,9 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
     print("\n" + "-" * 40)
     print("Phase 5: Content Pages")
     print("-" * 40)
-    if pages_dir.exists():
+    if not _run_phases:
+        print("  Skipped — images-only mode")
+    elif pages_dir.exists():
         import json as _json
         # Collect all page files from subdirectories (skip navboxes)
         page_files = []
@@ -810,6 +832,19 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
 
     else:
         print(f"  Skipped — {pages_dir}/ not found")
+
+    # --- Summary (content phases only) ---
+    if _run_phases and not dry_run:
+        from collections import Counter
+        counts = Counter(all_results)
+        total = sum(counts.values())
+        parts = []
+        for status in ("created", "updated", "unchanged", "error"):
+            if counts[status]:
+                parts.append(f"{counts[status]} {status}")
+        print("\n" + "=" * 40)
+        print("Upload complete: " + ", ".join(parts) if parts else "Upload complete: nothing to report")
+        print("=" * 40)
 
     # --- Phase 6: Images ---
     print("\n" + "-" * 40)

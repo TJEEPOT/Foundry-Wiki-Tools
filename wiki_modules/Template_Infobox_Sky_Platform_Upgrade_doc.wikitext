@@ -25,6 +25,6 @@ from the game installation at <code>F:\SteamLibrary\SteamApps\common\FOUNDRY</co
 
 == Notes ==
 * The category label is derived from <code>category_id</code> by stripping the <code>_base_</code> prefix and title-casing; <code>Rd</code> is corrected to <code>R&D</code>.
-* Endless upgrades (repeatable) are additionally categorised into <code>[[Category:Endless Upgrades]]</code>.
-* The infobox automatically adds <code>[[Category:Sky Platform Upgrades]]</code>.
+* Endless upgrades (repeatable) are additionally categorised into <code><nowiki>[[Category:Endless Upgrades]]</nowiki></code>.
+* The infobox automatically adds <code><nowiki>[[Category:Sky Platform Upgrades]]</nowiki></code>.
 {{doc/end}}

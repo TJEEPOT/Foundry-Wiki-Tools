@@ -146,6 +146,3 @@ SESSION_HANDOFF.md
 # added folders
 /wiki_backup
 /image
-
-# Pycache
-/foundry_parser/__pycache__/

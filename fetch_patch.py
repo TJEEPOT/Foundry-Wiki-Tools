@@ -17,6 +17,7 @@ Usage:
 
 Options:
     --list              Show recent posts with their API GIDs, then exit
+    --count N           Number of posts to show with --list (default: 5)
     --page-name NAME    Wiki page name (default: inferred from post title)
     --stage STAGE       e=Early Access, a=Alpha, b=Beta, r=Release  (default: e)
     --channel CHANNEL   st=Stable, ex=Experimental, m=Major         (default: st)
@@ -74,6 +75,12 @@ def find_item(gid: str, items: list[dict]) -> dict | None:
 def bbcode_to_wikitext(bbcode: str, page_name: str) -> str:
     """Convert Steam API BB code to MediaWiki wikitext."""
     text = bbcode
+
+    # Strip boilerplate social-media footer that appears at the end of Steam posts.
+    # Everything from "Follow us on socials" onwards is not patch content.
+    m = re.search(r'follow us on socials?', text, re.IGNORECASE)
+    if m:
+        text = text[:m.start()].rstrip()
 
     # Expand Steam clan image placeholder
     text = text.replace("{STEAM_CLAN_IMAGE}", STEAM_CLAN_IMAGE)
@@ -319,7 +326,7 @@ def build_page(item: dict, page_name: str, stage: str, channel: str) -> str:
         body,
         "",
         "== Navigation ==",
-        "{{PatchesNav}}",
+        "{{Navbox Patches}}",
         "",
     ])
 
@@ -362,7 +369,7 @@ def build_devblog_page(item: dict, page_name: str) -> str:
         body,
         "",
         "== Navigation ==",
-        "{{DevblogsNav}}",
+        "{{Navbox Devblogs}}",
         "",
     ])
 
@@ -371,7 +378,7 @@ def build_devblog_page(item: dict, page_name: str) -> str:
 # CLI
 # ---------------------------------------------------------------------------
 
-def cmd_list(count: int = 50) -> None:
+def cmd_list(count: int = 5) -> None:
     print(f"Fetching {count} most recent posts…")
     items = fetch_news(count)
     print()
@@ -448,6 +455,8 @@ def main() -> None:
         help="Steam API GID of the post (use --list to find it)",
     )
     parser.add_argument("--list", action="store_true", help="List recent posts and exit")
+    parser.add_argument("--count", type=int, default=5, metavar="N",
+                        help="Number of posts to show with --list (default: 5)")
     parser.add_argument("--page-name", default="", help="Wiki page name (inferred if omitted)")
     parser.add_argument("--stage",   default="e",  help="e/a/b/r (default: e)")
     parser.add_argument("--channel", default="st", help="st/ex/m (default: st)")
@@ -460,7 +469,7 @@ def main() -> None:
     args = parser.parse_args()
 
     if args.list:
-        cmd_list()
+        cmd_list(args.count)
         return
 
     if not args.gid:
