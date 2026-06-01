@@ -27,9 +27,54 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import date as _date
 from pathlib import Path
 
 from .game_data import GameData
+
+
+# ---------------------------------------------------------------------------
+# Image description helpers
+# ---------------------------------------------------------------------------
+
+def _game_asset_description(filename: str, upload_date: str | None = None) -> str:
+    """Generate a file description page for a game-asset image (item icons etc.).
+
+    *filename* should be the bare filename, e.g. ``Item_Assembler_I.png``.
+    The description is derived from the stem: ``Item_Assembler_I`` →
+    ``"Assembler I"``.  The category is inferred from the filename prefix
+    (``Item_`` → ``[[Category:Item Icon]]``).
+    """
+    stem = Path(filename).stem                         # "Item_Assembler_I"
+    name = stem.replace("_", " ")                      # "Item Assembler I"
+    # Strip known prefix for cleaner description
+    for prefix in ("Item ", "Building "):
+        if name.startswith(prefix):
+            name = name[len(prefix):]
+            break
+
+    today = upload_date or _date.today().isoformat()
+
+    # Infer category from filename prefix
+    category = ""
+    if filename.startswith("Item_"):
+        category = "\n[[Category:Item Icon]]"
+
+    return (
+        "=={{int:filedesc}}==\n"
+        "{{Information\n"
+        f"|description={{{{en|1={name}}}}}\n"
+        f"|date={today}\n"
+        "|source=FOUNDRY\n"
+        "|author=Channel 3 Entertainment\n"
+        "}}\n"
+        "\n"
+        "=={{int:license-header}}==\n"
+        "The license for this file was set manually by the author. "
+        "The following text describes the license:\n"
+        "{{Attribution|Channel 3 Entertainment}}"
+        f"{category}\n"
+    )
 
 
 def cmd_parse(args: argparse.Namespace) -> None:
@@ -856,9 +901,18 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
 
             for i, f in enumerate(image_files, 1):
                 dest = f.name  # already named Item_Foo.png etc.
+                # Use a .wikitext sidecar if present (written by fetch_patch.py
+                # for Steam images); otherwise generate game-asset description.
+                sidecar = f.with_suffix(".wikitext")
+                file_text = (
+                    sidecar.read_text(encoding="utf-8")
+                    if sidecar.exists()
+                    else _game_asset_description(dest)
+                )
                 if dry_run:
+                    sidecar_note = " (sidecar)" if sidecar.exists() else " (auto-desc)"
                     if i <= 5 or i == len(image_files):
-                        print(f"  [{i}/{len(image_files)}] would_upload: File:{dest} ({f.stat().st_size} bytes)")
+                        print(f"  [{i}/{len(image_files)}] would_upload: File:{dest} ({f.stat().st_size} bytes){sidecar_note}")
                     elif i == 6:
                         print(f"  ... ({len(image_files) - 6} more) ...")
                 else:
@@ -867,6 +921,7 @@ def cmd_batch_upload(args: argparse.Namespace) -> None:
                             file_path=f,
                             dest_filename=dest,
                             overwrite=overwrite,
+                            text=file_text,
                         )
                         upload_info = result.get("upload", {})
                         if "error" in result:

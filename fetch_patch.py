@@ -243,8 +243,38 @@ def extract_image_urls(bbcode: str) -> list[str]:
     return urls
 
 
-def download_images(urls: list[str], page_name: str, out_dir: Path) -> None:
-    """Download Steam patch images and save with wiki-ready filenames."""
+def _steam_image_description(description: str, date: str, steam_url: str) -> str:
+    """Return wikitext for the file description page of a Steam-sourced image."""
+    return (
+        "=={{int:filedesc}}==\n"
+        "{{Information\n"
+        f"|description={{{{en|1={description}}}}}\n"
+        f"|date={date}\n"
+        f"|source={steam_url}\n"
+        "|author=Channel 3 Entertainment\n"
+        "}}\n"
+        "\n"
+        "=={{int:license-header}}==\n"
+        "The license for this file was set manually by the author. "
+        "The following text describes the license:\n"
+        "{{Attribution|Channel 3 Entertainment}}\n"
+    )
+
+
+def download_images(
+    urls: list[str],
+    page_name: str,
+    out_dir: Path,
+    date: str = "",
+    steam_url: str = "",
+) -> None:
+    """Download Steam patch images and save with wiki-ready filenames.
+
+    If *date* and *steam_url* are provided a companion ``.wikitext`` sidecar
+    file is written alongside each image containing the file description page
+    content (author, licence, source URL).  The batch-upload tool reads these
+    sidecars automatically when uploading images.
+    """
     if not urls:
         return
     print(f"Downloading {len(urls)} image(s)…")
@@ -252,16 +282,26 @@ def download_images(urls: list[str], page_name: str, out_dir: Path) -> None:
         raw_ext = Path(url.split("?")[0]).suffix.lower()
         ext = raw_ext if raw_ext in {".jpg", ".jpeg", ".png", ".gif", ".webp"} else ".jpg"
         dest = out_dir / f"{page_name} {i:02d}{ext}"
+        sidecar = dest.with_suffix(".wikitext")
         if dest.exists():
             print(f"  [{i}/{len(urls)}] {dest.name} (already exists, skipping)")
-            continue
-        try:
-            req = Request(url, headers={"User-Agent": "FoundryWikiTools/1.0"})
-            with urlopen(req, timeout=30) as resp:
-                dest.write_bytes(resp.read())
-            print(f"  [{i}/{len(urls)}] {dest.name}")
-        except Exception as exc:
-            print(f"  [{i}/{len(urls)}] WARNING: could not download {url}: {exc}")
+        else:
+            try:
+                req = Request(url, headers={"User-Agent": "FoundryWikiTools/1.0"})
+                with urlopen(req, timeout=30) as resp:
+                    dest.write_bytes(resp.read())
+                print(f"  [{i}/{len(urls)}] {dest.name}")
+            except Exception as exc:
+                print(f"  [{i}/{len(urls)}] WARNING: could not download {url}: {exc}")
+                continue
+
+        # Write sidecar description (skip if already present)
+        if date and steam_url and not sidecar.exists():
+            description = f"{page_name} image {i:02d}"
+            sidecar.write_text(
+                _steam_image_description(description, date, steam_url),
+                encoding="utf-8",
+            )
 
 
 # ---------------------------------------------------------------------------
@@ -439,7 +479,52 @@ def cmd_fetch(args: argparse.Namespace) -> None:
 
     if not getattr(args, "no_images", False):
         image_urls = extract_image_urls(item["contents"])
-        download_images(image_urls, page_name, out_dir)
+        download_images(
+            image_urls, page_name, out_dir,
+            date=fmt_date(item["date"]),
+            steam_url=item["url"],
+        )
+    else:
+        img_count = len(re.findall(r"\[\[File:", content))
+        if img_count:
+            print(f"Images     : {img_count} placeholder(s) — skipped (--no-images)")
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser(
+        description="Fetch a Foundry Steam patch note and convert it to wiki format.",
+    )
+    parser.add_argument(
+        "gid", nargs="?", default=None,
+        help="Steam API GID of the post (use --list to find it)",
+    )
+    parser.add_argument("--list", action="store_true", help="List recent posts and exit")
+    parser.add_argument("--count", type=int, default=5, metavar="N",
+                        help="Number of posts to show with --list (default: 5)")
+    parser.add_argument("--page-name", default="", help="Wiki page name (inferred if omitted)")
+    parser.add_argument("--stage",   default="e",  help="e/a/b/r (default: e)")
+    parser.add_argument("--channel", default="st", help="st/ex/m (default: st)")
+    parser.add_argument("--out-dir", default="wiki_pages/patches/")
+    parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--no-images", action="store_true",
+        help="Skip downloading images (placeholders remain in the wikitext)",
+    )
+    args = parser.parse_args()
+
+    if args.list:
+        cmd_list(args.count)
+        return
+
+    if not args.gid:
+        parser.error("Provide an API GID, or use --list to see available posts.")
+
+    cmd_fetch(args)
+
+
+if __name__ == "__main__":
+    main()
+        )
     else:
         img_count = len(re.findall(r"\[\[File:", content))
         if img_count:

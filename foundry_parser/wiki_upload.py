@@ -178,6 +178,7 @@ class WikiUploader:
         dest_filename: str = "",
         summary: str = "",
         overwrite: bool = True,
+        text: str = "",
     ) -> dict[str, Any]:
         """Upload a binary file (image, etc.) to the wiki.
 
@@ -190,6 +191,9 @@ class WikiUploader:
             summary:       Edit comment shown in the file's upload log.
             overwrite:     If True, passes ``ignorewarnings=1`` so that an
                            existing file with the same name is overwritten.
+            text:          Wikitext for the file description page (sets
+                           author, licence, category, etc.).  If omitted the
+                           wiki's default upload text is used.
         """
         if not self.csrf_token:
             raise RuntimeError("Not logged in. Call login() first.")
@@ -205,6 +209,8 @@ class WikiUploader:
             "token": self.csrf_token,
             "format": "json",
         }
+        if text:
+            params["text"] = text
         if overwrite:
             params["ignorewarnings"] = "1"
 
